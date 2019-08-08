@@ -295,7 +295,7 @@ public class ESCUtil {
 	public static byte[] generateMockData() {
 		try {
 			byte[] next2Line = ESCUtil.nextLine(2);
-			byte[] title = "出餐单（午餐）**万通中心店".getBytes("gb2312");
+			byte[] title = "这是门店名  **中心店".getBytes("gb2312");
 
 			byte[] boldOn = ESCUtil.boldOn();
 			byte[] fontSize2Big = ESCUtil.fontSizeSetBig(3);
@@ -305,10 +305,10 @@ public class ESCUtil {
 			byte[] fontSize2Small = ESCUtil.fontSizeSetSmall(3);
 
 			byte[] left = ESCUtil.alignLeft();
-			byte[] orderSerinum = "订单编号：11234".getBytes("gb2312");
+			byte[] orderSerinum = "订单编号：1234".getBytes("gb2312");
 			boldOn = ESCUtil.boldOn();
 			byte[] fontSize1Big = ESCUtil.fontSizeSetBig(2);
-			byte[] FocusOrderContent = "韭菜鸡蛋饺子-小份（单）".getBytes("gb2312");
+			byte[] FocusOrderContent = "蛋炒饭-（单）".getBytes("gb2312");
 			boldOff = ESCUtil.boldOff();
 			byte[] fontSize1Small = ESCUtil.fontSizeSetSmall(2);
 
@@ -334,7 +334,8 @@ public class ESCUtil {
 			byte[][] cmdBytes = { title, nextLine, center, boldOn, fontSize2Big, Focus, boldOff, fontSize2Small,
 					next2Line, left, orderSerinum, nextLine, center, boldOn, fontSize1Big, FocusOrderContent, boldOff,
 					fontSize1Small, nextLine, left, next2Line, priceInfo, nextLine, priceShouldPay, next2Line, takeTime,
-					nextLine, setOrderTime, next2Line, center, tips_1, nextLine, center, tips_2, next4Line,
+					nextLine, setOrderTime, next2Line, center,
+					tips_1, nextLine, center, tips_2, next4Line,
 					breakPartial };
 
 			return ESCUtil.byteMerger(cmdBytes);

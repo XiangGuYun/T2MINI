@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "com.yp.payment"
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -33,4 +33,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     implementation files('libs/sunmiscan.jar')
+    implementation files('libs/acssmc-1.1.3.jar')
+    implementation files('libs/SunmiReader.jar')
+
+    implementation 'com.sunmi:DS_Lib:1.0.11'
+    implementation 'com.alibaba:fastjson:1.1.67.android'
 }
