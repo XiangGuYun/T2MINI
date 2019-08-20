@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ddd">
+
+    <TextView
+        android:id="@+id/tv_shop_name"
+        android:layout_width="144dp"
+        android:layout_height="33dp"
+        android:layout_margin="20dp"
+        android:text="上海虹梅路店"
+        android:textColor="#ff46515e"
+        android:textSize="24sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_shop_num"
+        android:layout_width="116dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="10dp"
+        android:text="13600000000"
+        android:textColor="#ff46515e"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_shop_name"
+        app:layout_constraintTop_toBottomOf="@+id/tv_shop_name" />
+
+    <ImageView
+        android:id="@+id/iv_exit"
+        android:layout_width="106dp"
+        android:layout_height="44dp"
+        android:layout_marginLeft="326dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/shape_exit"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/icon_quit"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_exit"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_exit"
+        app:layout_constraintTop_toTopOf="@+id/iv_exit" />
+
+    <TextView
+        android:layout_width="32dp"
+        android:layout_height="22dp"
+        android:layout_marginRight="19dp"
+        android:text="退出"
+        android:textColor="#ff46515e"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_exit"
+        app:layout_constraintRight_toRightOf="@+id/iv_exit"
+        app:layout_constraintTop_toTopOf="@+id/iv_exit" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/order_recyclerview"
+        android:layout_width="412dp"
+        android:layout_height="556dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/white"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_shop_num"
+        app:layout_constraintTop_toBottomOf="@+id/tv_shop_num" />
+
+    <TextView
+        android:id="@+id/btn_print"
+        android:layout_width="230dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/shape_print"
+        android:gravity="center"
+        android:text="打印预结算"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintLeft_toLeftOf="@+id/order_recyclerview"
+        app:layout_constraintTop_toBottomOf="@+id/order_recyclerview" />
+
+    <TextView
+        android:layout_width="172dp"
+        android:layout_height="60dp"
+        android:background="@drawable/shape_refund"
+        android:gravity="center"
+        android:text="退款"
+        android:textColor="#ffe1584e"
+        android:textSize="24sp"
+        app:layout_constraintRight_toRightOf="@+id/order_recyclerview"
+        app:layout_constraintTop_toTopOf="@+id/btn_print" />
+
+    <View
+        android:id="@+id/view_centre"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="452dp"
+        android:background="#E1E1E3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        app:layout_constraintLeft_toRightOf="@+id/view_centre"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/btn_vip_login"
+        android:layout_width="130dp"
+        android:layout_height="42dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/shape_vip_login"
+        android:gravity="center"
+        android:text="会员登录"
+        android:textColor="#ffffffff"
+        android:textSize="18sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_vip_num"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:layout_marginLeft="20dp"
+        android:minWidth="170dp"
+        android:text="会员号："
+        android:textColor="#ff999999"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_vip_login"
+        app:layout_constraintLeft_toRightOf="@+id/view_centre"
+        app:layout_constraintTop_toTopOf="@+id/btn_vip_login" />
+
+    <TextView
+        android:id="@+id/tv_vip_phone"
+        android:layout_width="80dp"
+        android:layout_height="28dp"
+        android:text="手机号："
+        android:textColor="#ff999999"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_vip_login"
+        app:layout_constraintLeft_toRightOf="@+id/tv_vip_num"
+        app:layout_constraintTop_toTopOf="@+id/btn_vip_login" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/pay_recycler_view"
+        android:layout_width="874dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="21dp"
+        android:background="@color/white"
+        android:overScrollMode="never"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_vip_num"
+        app:layout_constraintTop_toBottomOf="@+id/tv_vip_num" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/cash_recycler_view"
+        android:layout_width="874dp"
+        android:layout_height="wrap_content"
+        android:minHeight="64dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/white"
+        android:overScrollMode="never"
+        app:layout_constraintLeft_toLeftOf="@+id/pay_recycler_view"
+        app:layout_constraintTop_toBottomOf="@+id/pay_recycler_view" />
+
+    <EditText
+        android:id="@+id/tv_input_cash"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="52dp"
+        android:inputType="numberDecimal"
+        android:background="@drawable/shape_intpu_cash"
+        android:gravity="center"
+        android:text="0"
+
+        android:textColor="#ff333333"
+        android:textCursorDrawable="@color/transparent"
+        android:textSize="34sp"
+        app:layout_constraintLeft_toLeftOf="@+id/cash_recycler_view"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cash_recycler_view" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#ddd"
+        app:layout_constraintBottom_toBottomOf="@+id/virtualKeyboardView"
+        app:layout_constraintLeft_toLeftOf="@+id/virtualKeyboardView"
+        app:layout_constraintRight_toRightOf="@+id/tv_input_cash"
+        app:layout_constraintTop_toTopOf="@+id/virtualKeyboardView" />
+
+    <com.yp.payment.view.VirtualKeyboardView
+        android:id="@+id/virtualKeyboardView"
+        android:layout_width="640dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:padding="10dp"
+        app:layout_constraintLeft_toLeftOf="@+id/cash_recycler_view"
+        app:layout_constraintTop_toBottomOf="@+id/tv_input_cash" />
+
+    <TextView
+        android:id="@+id/tv_over"
+        android:layout_width="190dp"
+        android:layout_height="366dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:background="#E1584E"
+        android:gravity="center"
+        android:text="结账"
+        android:textColor="#ffffffff"
+        android:textSize="32sp"
+        app:layout_constraintLeft_toRightOf="@+id/virtualKeyboardView"
+        app:layout_constraintTop_toTopOf="@+id/virtualKeyboardView" />
+</android.support.constraint.ConstraintLayout>

@@ -7,4 +7,16 @@
     <color name="finder_mask">#60000000</color>
     <color name="rea">#ffff0000</color>
     <color name="possible_result_points">#c0ffff00</color>
+    <color name="white">#fff</color>
+    <color name="select_cash">#ff3498db</color>
+    <color name="unselect_pay_mode">#ddd</color>
+    <color name="color_666">#666666</color>
+    <color name="color_999">#999</color>
+    <color name="color_cash">#F99100</color>
+    <color name="color_ali">#00AAEE</color>
+    <color name="color_wechat">#44B549</color>
+    <color name="pop_select_text">#E1584E</color>
+    <color name="pop_select_bg">#FFF5F6</color>
+
+    <color name="transparent">#00000000</color>
 </resources>

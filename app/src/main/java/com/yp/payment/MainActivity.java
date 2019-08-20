@@ -46,8 +46,7 @@ import com.sunmi.scan.Image;
 import com.sunmi.scan.ImageScanner;
 import com.sunmi.scan.Symbol;
 import com.sunmi.scan.SymbolSet;
-import com.yp.payment.input.InputKeyboardCallback;
-import com.yp.payment.input.KeyboardAdapter;
+import com.yp.payment.adapter.KeyBoardAdapter;
 import com.yp.payment.printer.BluetoothUtil;
 import com.yp.payment.printer.ESCUtil;
 import com.yp.payment.reader.ReaderUtils;
@@ -119,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
      */
     GridView gridview;
     TextView tv_money;
-    KeyboardAdapter keyboardAdapter;
+    KeyBoardAdapter keyboardAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,12 +184,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         gridview = findViewById(R.id.gridview);
         tv_money = findViewById(R.id.tv_money);
 
-        keyboardAdapter = new KeyboardAdapter(this, tv_money, new InputKeyboardCallback() {
-            @Override
-            public void onInputTextResult(String result) {
-                String moneyStr = tv_money.getText().toString();
-            }
-        });
+//        keyboardAdapter = new KeyBoardAdapter(this, tv_money, new InputKeyboardCallback() {
+//            @Override
+//            public void onInputTextResult(String result) {
+//                String moneyStr = tv_money.getText().toString();
+//            }
+//        });
         gridview.setAdapter(keyboardAdapter);
         mHolder = surface_view.getHolder();
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
