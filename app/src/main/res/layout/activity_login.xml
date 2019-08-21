@@ -60,6 +60,7 @@
         app:layout_constraintTop_toBottomOf="@+id/edit_user_account" />
 
     <Button
+        android:id="@+id/btn_login_user"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginLeft="5dp"
@@ -68,7 +69,7 @@
         android:text="登录"
         android:textColor="#ff666666"
         app:layout_constraintBottom_toBottomOf="@+id/edit_user_psw"
-        app:layout_constraintTop_toTopOf="@+id/edit_user_psw"
         app:layout_constraintLeft_toRightOf="@+id/edit_user_psw"
-        app:layout_constraintRight_toRightOf="@+id/edit_user_account" />
+        app:layout_constraintRight_toRightOf="@+id/edit_user_account"
+        app:layout_constraintTop_toTopOf="@+id/edit_user_psw" />
 </android.support.constraint.ConstraintLayout>

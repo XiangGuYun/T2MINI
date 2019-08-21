@@ -40,11 +40,16 @@
         <meta-data
             android:name="design_height_in_dp"
             android:value="768" />
+
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.LoginActivity"
             android:configChanges="navigation|keyboardHidden|keyboard"
             android:launchMode="singleTask">
 
+
+
+        </activity>
+        <activity android:name=".MoneyActivity">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
                 <action android:name="android.intent.action.MAIN" />
@@ -59,9 +64,9 @@
 
             <meta-data
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
-                android:resource="@xml/device_filter"></meta-data>
-        </activity>
+                android:resource="@xml/device_filter" />
 
+        </activity>
         <receiver android:name=".screen.receiver.MyBroadCastReceiver">
             <intent-filter>
                 <action android:name="com.sunmi.hcservice" />

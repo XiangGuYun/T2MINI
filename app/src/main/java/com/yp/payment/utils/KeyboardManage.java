@@ -1,8 +1,6 @@
-package com.yp.payment;
+package com.yp.payment.utils;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -10,89 +8,69 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
+import com.yp.payment.R;
 import com.yp.payment.adapter.CashModeAdapter;
-import com.yp.payment.adapter.OrderListAdapter;
-import com.yp.payment.adapter.PayModeAdapter;
-import com.yp.payment.adapter.PopVipLoginAdapter;
 import com.yp.payment.input.KeyBoardCallback;
-import com.yp.payment.interfaces.PayModeCallback;
 import com.yp.payment.interfaces.RecommendPriceCallback;
-import com.yp.payment.view.VipLoginPop;
+import com.yp.payment.interfaces.SettlementCallback;
 import com.yp.payment.view.VirtualKeyboardView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestActivity extends AppCompatActivity implements KeyBoardCallback, View.OnClickListener, RecommendPriceCallback, PayModeCallback {
-    private static final String TAG = "TestActivity";
-
-    RecyclerView pay_recycler_view;
-    RecyclerView cash_recycler_view;
-    RecyclerView order_recyclerview;
+/**
+ * @author : cp
+ * @email : ibsfiq@qq.com
+ * @date : 2019/8/21 14:27
+ * @description ：
+ */
+public class KeyboardManage implements KeyBoardCallback, RecommendPriceCallback {
+    private static final String TAG = "KeyboardManage";
+    VirtualKeyboardView virtualKeyboardView;
     EditText tv_input_cash;
-    private VirtualKeyboardView virtualKeyboardView;
-    /**
-     * 是否键盘输入
-     */
-    boolean autoSetting = true;
-    /**
-     * 支付方式,默认现金
-     */
-    int payMode = 0;
-    PayModeAdapter payModeAdapter;
+    SettlementCallback settlementCallback;
+    RecyclerView cash_recycler_view;
 
     /**
      * 结算价钱推荐
      */
     CashModeAdapter cashModeAdapter;
 
-    /**
-     * 会员登录
-     */
-    VipLoginPop vipLoginPop;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pay_page);
-        Window _window = getWindow();
-        WindowManager.LayoutParams params = _window.getAttributes();
-        params.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE;
-        _window.setAttributes(params);
-
-
-        vipLoginPop = new VipLoginPop(this);
-
-        tv_input_cash = findViewById(R.id.tv_input_cash);
-        virtualKeyboardView = findViewById(R.id.virtualKeyboardView);
-        virtualKeyboardView.setKeyBoardCallback(this);
-
-        findViewById(R.id.tv_over).setOnClickListener(this);
-        findViewById(R.id.btn_vip_login).setOnClickListener(this);
-
-        order_recyclerview = findViewById(R.id.order_recyclerview);
-        order_recyclerview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        OrderListAdapter orderListAdapter = new OrderListAdapter(this);
-        order_recyclerview.setAdapter(orderListAdapter);
-
-
-        pay_recycler_view = findViewById(R.id.pay_recycler_view);
-        pay_recycler_view.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        payModeAdapter = new PayModeAdapter(this, this);
-        pay_recycler_view.setAdapter(payModeAdapter);
-
-        cash_recycler_view = findViewById(R.id.cash_recycler_view);
-        cash_recycler_view.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        cashModeAdapter = new CashModeAdapter(this, this);
+    public KeyboardManage(Context context, View rootView, SettlementCallback settlementCallback) {
+        this.settlementCallback = settlementCallback;
+        cashModeAdapter = new CashModeAdapter(context, this);
+        rootView.findViewById(R.id.tv_over).setOnClickListener(onClickListener);
+        tv_input_cash = rootView.findViewById(R.id.tv_input_cash);
+        virtualKeyboardView = rootView.findViewById(R.id.virtualKeyboardView);
+        cash_recycler_view = rootView.findViewById(R.id.cash_recycler_view);
+        cash_recycler_view.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         cash_recycler_view.setAdapter(cashModeAdapter);
+        solveInputData();
+    }
 
-        virtualKeyboardView = findViewById(R.id.virtualKeyboardView);
+    /**
+     * 结算
+     */
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            try {
+                double price = Double.parseDouble(tv_input_cash.getText().toString());
+                settlementCallback.onSettlementClick(price);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    /**
+     * 是否键盘输入
+     */
+    boolean autoSetting = true;
 
+    public void solveInputData() {
+        virtualKeyboardView.setKeyBoardCallback(this);
         tv_input_cash.setShowSoftInputOnFocus(false);
         tv_input_cash.addTextChangedListener(new TextWatcher() {
             @Override
@@ -162,7 +140,6 @@ public class TestActivity extends AppCompatActivity implements KeyBoardCallback,
             public void afterTextChanged(Editable editable) {
             }
         });
-
     }
 
     public void recommend() {
@@ -229,28 +206,7 @@ public class TestActivity extends AppCompatActivity implements KeyBoardCallback,
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_over:
-                showToast("结算");
-                break;
-            case R.id.btn_vip_login:
-                vipLoginPop.show();
-                break;
-        }
-    }
-
-    public void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void priceCallback(int price) {
         tv_input_cash.setText(String.valueOf(price));
-    }
-
-    @Override
-    public void onSelectedMode(int mode) {
-        payMode = mode;
     }
 }

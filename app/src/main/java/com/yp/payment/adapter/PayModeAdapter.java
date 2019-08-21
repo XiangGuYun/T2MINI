@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yp.payment.Consts;
 import com.yp.payment.R;
 import com.yp.payment.interfaces.PayModeCallback;
 
@@ -34,28 +35,10 @@ public class PayModeAdapter extends RecyclerView.Adapter<PayModeAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        switch (i) {
-            case 0:
-                viewHolder.item_iv_pay_mode_icon.setImageResource(R.drawable.icon_cash);
-                viewHolder.item_tv_pay_mode_name.setText("现金");
-                break;
-            case 1:
-                viewHolder.item_iv_pay_mode_icon.setImageResource(R.drawable.icon_nfc);
-                viewHolder.item_tv_pay_mode_name.setText("NFC卡");
-                break;
-            case 2:
-                viewHolder.item_iv_pay_mode_icon.setImageResource(R.drawable.icon_alipay);
-                viewHolder.item_tv_pay_mode_name.setText("支付宝");
-                break;
-            case 3:
-                viewHolder.item_iv_pay_mode_icon.setImageResource(R.drawable.icon_wechat);
-                viewHolder.item_tv_pay_mode_name.setText("微信支付");
-                break;
-            case 4:
-                viewHolder.item_iv_pay_mode_icon.setImageResource(R.drawable.icon_card);
-                viewHolder.item_tv_pay_mode_name.setText("储值支付");
-                break;
-        }
+
+        viewHolder.item_iv_pay_mode_icon.setImageResource(Consts.payModeIcons[i]);
+        viewHolder.item_tv_pay_mode_name.setText(Consts.payModes[i]);
+
         if (selectedMode == i) {
             viewHolder.itemiv_pay_mode_bg_layout.setBackgroundResource(R.color.white);
         } else {
