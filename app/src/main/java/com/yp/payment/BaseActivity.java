@@ -8,13 +8,15 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import me.jessyan.autosize.internal.CustomAdapt;
+
 /**
  * @author : cp
  * @email : ibsfiq@qq.com
  * @date : 2019/8/21 14:02
  * @description ：
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements CustomAdapt {
     Context mContext;
 
     @Override
@@ -50,5 +52,16 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void openActivity(Class<?> cls) {
         startActivity(new Intent(mContext, cls));
+    }
+
+
+    @Override
+    public boolean isBaseOnWidth() {
+        return true;
+    }
+
+    @Override
+    public float getSizeInDp() {
+        return 1366;
     }
 }

@@ -1,6 +1,5 @@
 package com.yp.payment;
 
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,8 +9,10 @@ import android.widget.TextView;
 
 import com.yp.payment.adapter.OrderListAdapter;
 import com.yp.payment.adapter.PayModeAdapter;
+import com.yp.payment.entity.DepositorInfo;
 import com.yp.payment.interfaces.PayModeCallback;
 import com.yp.payment.interfaces.SettlementCallback;
+import com.yp.payment.ui.LoginActivity;
 import com.yp.payment.utils.KeyboardManage;
 import com.yp.payment.view.PayResultPop;
 import com.yp.payment.view.VipLoginPop;
@@ -30,8 +31,10 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
      */
     int payMode = 0;
     PayModeAdapter payModeAdapter;
-
-
+    /**
+     * 选中推荐价钱
+     */
+    double commPrice;
     /**
      * 会员登录
      */
@@ -41,6 +44,10 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
      * 结算弹窗
      */
     PayResultPop payResultPop;
+    /**
+     * 储户信息
+     */
+    DepositorInfo depositorInfo;
 
     @Override
     public int layoutId() {
@@ -49,7 +56,8 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void initView() {
-        hidekeyboard();
+        findViewById(R.id.iv_exit).setOnClickListener(this);
+        hideNavigation();
         initOrderList();
         initKeyboard();
         initPayMode();
@@ -69,7 +77,10 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
 
     }
 
-    void hidekeyboard() {
+    /**
+     * 隐藏navigation
+     */
+    void hideNavigation() {
         Window _window = getWindow();
         WindowManager.LayoutParams params = _window.getAttributes();
         params.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE;
@@ -107,7 +118,10 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
+            case R.id.iv_exit:
+                openActivity(LoginActivity.class);
+                finish();
+                break;
             case R.id.btn_vip_login:
                 vipLoginPop.show();
                 break;
@@ -124,9 +138,13 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onSettlementClick(double price) {
+        if (payMode == 4 && depositorInfo == null) {
+            showToast("会员登录");
+            return;
+        }
         DecimalFormat df = new DecimalFormat("#0.00");
-        showToast("使用 " + Consts.payModes[payMode] + " 支付了 " +df.format(price) );
-        payResultPop.show();
+        showToast("使用 " + Consts.payModes[payMode] + " 支付了 " + df.format(price));
+        payResultPop.showPop(payMode, price, 100);
     }
 
     public static void main(String[] args) {

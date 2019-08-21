@@ -7,7 +7,7 @@ android {
         applicationId "com.yp.payment"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 6
+        versionCode 13
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -40,4 +40,15 @@ dependencies {
     implementation 'com.alibaba:fastjson:1.1.67.android'
 
     implementation 'me.jessyan:autosize:1.1.2'
+
+    //eventbus
+    implementation 'org.greenrobot:eventbus:3.1.1'
+
+    //网络请求
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 }

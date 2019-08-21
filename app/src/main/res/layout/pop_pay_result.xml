@@ -50,7 +50,6 @@
         android:text="实付："
         android:textColor="@color/color_999"
         android:textSize="22sp"
-        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="@+id/tv_used_price_title"
         app:layout_constraintTop_toBottomOf="@+id/tv_used_price_title" />
 
@@ -61,7 +60,6 @@
         android:text="¥100.00"
         android:textColor="@color/color_333"
         android:textSize="22sp"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tv_balance_title"
         app:layout_constraintRight_toRightOf="@+id/tv_used_price"
         app:layout_constraintTop_toTopOf="@+id/tv_balance_title" />
@@ -106,10 +104,10 @@
         android:gravity="center"
         android:text="取消"
         android:textColor="@color/white"
-        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/btn_sure_pay"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btn_sure_pay" />
 
     <Button
         android:id="@+id/btn_sure_pay"
@@ -119,8 +117,9 @@
         android:gravity="center"
         android:text="确认已支付"
         android:textColor="@color/white"
-        app:layout_constraintLeft_toRightOf="@+id/btn_cancel"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/btn_cancel"
+        app:layout_constraintLeft_toRightOf="@+id/btn_cancel"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_cancel" />
 </android.support.constraint.ConstraintLayout>
