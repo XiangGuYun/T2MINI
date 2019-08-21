@@ -41,7 +41,7 @@
             android:name="design_height_in_dp"
             android:value="768" />
         <activity
-            android:name=".TestActivity"
+            android:name=".LoginActivity"
             android:configChanges="navigation|keyboardHidden|keyboard"
             android:launchMode="singleTask">
 

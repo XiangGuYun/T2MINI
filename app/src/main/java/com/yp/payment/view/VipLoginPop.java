@@ -29,9 +29,8 @@ public class VipLoginPop extends Dialog implements View.OnClickListener {
 
     TextView btn_login_phone, btn_login_qrcode, btn_login_card;
     PopVipLoginAdapter popVipLoginAdapter;
-    PhoneVipLoginFragment phoneVipLoginFragment;
-    CardVipLoginFragment cardVipLoginFragment;
-    ScanVipLoginFragment scanVipLoginFragment;
+    ViewPager pop_viewpager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +40,7 @@ public class VipLoginPop extends Dialog implements View.OnClickListener {
         params.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE;
         _window.setAttributes(params);
         setContentView(R.layout.pop_vip_login);
+        pop_viewpager = findViewById(R.id.pop_viewpager);
         btn_login_phone = findViewById(R.id.btn_login_phone);
         btn_login_qrcode = findViewById(R.id.btn_login_qrcode);
         btn_login_card = findViewById(R.id.btn_login_card);
@@ -55,8 +55,9 @@ public class VipLoginPop extends Dialog implements View.OnClickListener {
 //        setOnDismissListener(onDismissListener);
 //        pop_intpu_edit.requestFocus();
 
-//        popVipLoginAdapter = new PopVipLoginAdapter(((AppCompatActivity) getOwnerActivity()).getSupportFragmentManager());
-        showFramgent(0);
+        popVipLoginAdapter = new PopVipLoginAdapter(((AppCompatActivity) context).getSupportFragmentManager());
+//        pop_viewpager.setAdapter(popVipLoginAdapter);
+//        showFramgent(0);
     }
 
     OnDismissListener onDismissListener = new OnDismissListener() {
@@ -107,7 +108,8 @@ public class VipLoginPop extends Dialog implements View.OnClickListener {
     int lastIndex = -1;
 
     public void showFramgent(int index) {
-        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+        pop_viewpager.setCurrentItem(index);
+//        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
 //        if (lastIndex == 0) {
 //            fragmentTransaction.hide(phoneVipLoginFragment);
 //        } else if (lastIndex == 1) {
@@ -115,23 +117,25 @@ public class VipLoginPop extends Dialog implements View.OnClickListener {
 //        } else if (lastIndex == 2) {
 //            fragmentTransaction.hide(scanVipLoginFragment);
 //        }
-        if (index == 0) {
-            if (phoneVipLoginFragment == null) {
-                phoneVipLoginFragment = new PhoneVipLoginFragment();
-            }
-            fragmentTransaction.replace(R.id.pop_framelayout, phoneVipLoginFragment);
-        } else if (index == 1) {
-            if (cardVipLoginFragment == null) {
-                cardVipLoginFragment = new CardVipLoginFragment();
-            }
-            fragmentTransaction.replace(R.id.pop_framelayout, cardVipLoginFragment);
-        } else if (index == 2) {
-            if (scanVipLoginFragment == null) {
-                scanVipLoginFragment = new ScanVipLoginFragment();
-            }
-            fragmentTransaction.replace(R.id.pop_framelayout, scanVipLoginFragment);
-        }
-        fragmentTransaction.commit();
+//        if (index == 0) {
+//            if (phoneVipLoginFragment == null) {
+//                phoneVipLoginFragment = new PhoneVipLoginFragment();
+//                fragmentTransaction.add(R.id.pop_framelayout, phoneVipLoginFragment);
+//            }
+//            fragmentTransaction.show(phoneVipLoginFragment);
+////            fragmentTransaction.replace(R.id.pop_framelayout, phoneVipLoginFragment);
+//        } else if (index == 1) {
+//            if (cardVipLoginFragment == null) {
+//                cardVipLoginFragment = new CardVipLoginFragment();
+//            }
+//            fragmentTransaction.replace(R.id.pop_framelayout, cardVipLoginFragment);
+//        } else if (index == 2) {
+//            if (scanVipLoginFragment == null) {
+//                scanVipLoginFragment = new ScanVipLoginFragment();
+//            }
+//            fragmentTransaction.replace(R.id.pop_framelayout, scanVipLoginFragment);
+//        }
+//        fragmentTransaction.commit();
 
     }
 }
