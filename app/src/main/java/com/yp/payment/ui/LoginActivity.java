@@ -41,6 +41,8 @@ public class LoginActivity extends BaseActivity {
         edit_user_account = findViewById(R.id.edit_user_account);
         edit_user_psw = findViewById(R.id.edit_user_psw);
         findViewById(R.id.btn_login_user).setOnClickListener(onClickListener);
+        checkBluetoothPermission();
+
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -53,7 +55,6 @@ public class LoginActivity extends BaseActivity {
     void loginAdmin() {
         String user_account = edit_user_account.getText().toString().trim();
         String user_psw = edit_user_psw.getText().toString().trim();
-        checkBluetoothPermission();
         if (TextUtils.isEmpty(user_account)) {
             showToast(getResString(R.string.invalid_account));
             return;
@@ -67,7 +68,6 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void initData() {
-
     }
 
     /*
