@@ -45,17 +45,17 @@
             android:name=".ui.LoginActivity"
             android:configChanges="navigation|keyboardHidden|keyboard"
             android:launchMode="singleTask">
-
-
-
-        </activity>
-        <activity android:name=".MoneyActivity">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
+        </activity>
+        <activity android:name=".MoneyActivity">
+
             <intent-filter>
 
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />

@@ -57,7 +57,7 @@ public class VipLoginPop extends Dialog implements View.OnClickListener {
 
         popVipLoginAdapter = new PopVipLoginAdapter(((AppCompatActivity) context).getSupportFragmentManager());
 //        pop_viewpager.setAdapter(popVipLoginAdapter);
-//        showFramgent(0);
+        showFramgent(0);
     }
 
     OnDismissListener onDismissListener = new OnDismissListener() {
@@ -108,7 +108,7 @@ public class VipLoginPop extends Dialog implements View.OnClickListener {
     int lastIndex = -1;
 
     public void showFramgent(int index) {
-        pop_viewpager.setCurrentItem(index);
+//        pop_viewpager.setCurrentItem(index);
 //        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
 //        if (lastIndex == 0) {
 //            fragmentTransaction.hide(phoneVipLoginFragment);
