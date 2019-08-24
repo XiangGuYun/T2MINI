@@ -58,7 +58,7 @@ public class KeyboardManage implements KeyBoardCallback, RecommendPriceCallback 
         public void onClick(View v) {
             try {
                 double price = Double.parseDouble(tv_input_cash.getText().toString());
-                settlementCallback.onSettlementClick(price);
+                settlementCallback.onSettlementClick(price, 0);
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
@@ -150,7 +150,6 @@ public class KeyboardManage implements KeyBoardCallback, RecommendPriceCallback 
             if (str.contains(".")) {
                 double priceDouble = Double.parseDouble(str);
                 priceInt = (int) priceDouble;
-//                Log.d(TAG, "recommend:  toInt  =  " + priceInt);
                 if (priceDouble > 0 && priceInt == 0) {
                     //零点几块钱
                     prices = compayList(1);
@@ -162,12 +161,6 @@ public class KeyboardManage implements KeyBoardCallback, RecommendPriceCallback 
             }
             prices = compayList(priceInt);
             cashModeAdapter.setMlist(prices);
-//            Log.d(TAG, "recommend: ======================   ");
-//            Log.d(TAG, "recommend: 当前价钱 = " + str);
-//            for (int i = 0; i < prices.size(); i++) {
-//                Log.d(TAG, "recommend: 推荐的价钱是 = " + prices.get(i));
-//            }
-//            Log.d(TAG, "recommend: ======================   ");
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -207,6 +200,11 @@ public class KeyboardManage implements KeyBoardCallback, RecommendPriceCallback 
 
     @Override
     public void priceCallback(int price) {
-        tv_input_cash.setText(String.valueOf(price));
+        try {
+            double price2 = Double.parseDouble(tv_input_cash.getText().toString());
+            settlementCallback.onSettlementClick(price2, price);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
     }
 }

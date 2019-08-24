@@ -53,6 +53,7 @@ public class LoginActivity extends BaseActivity {
     void loginAdmin() {
         String user_account = edit_user_account.getText().toString().trim();
         String user_psw = edit_user_psw.getText().toString().trim();
+        checkBluetoothPermission();
         if (TextUtils.isEmpty(user_account)) {
             showToast(getResString(R.string.invalid_account));
             return;

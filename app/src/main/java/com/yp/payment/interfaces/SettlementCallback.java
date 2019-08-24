@@ -7,5 +7,5 @@ package com.yp.payment.interfaces;
  * @description ：点击结算回调
  */
 public interface SettlementCallback {
-    void onSettlementClick(double price);
+    void onSettlementClick(double price,double commPrice);
 }

@@ -393,14 +393,25 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
     }
 
     @Override
-    public void onSettlementClick(double price) {
+    public void onSettlementClick(double price, double commPrice) {
+
         if (payMode == 4 && depositorInfo == null) {
             showToast("会员登录");
             return;
         }
         DecimalFormat df = new DecimalFormat("#0.00");
         showToast("使用 " + Consts.payModes[payMode] + " 支付了 " + df.format(price));
-        payResultPop.showPop(payMode, price, 100);
+        if (payMode == 4) {
+            payResultPop.showPop(payMode, price, 10000);
+        } else {
+            if (commPrice == 0) {
+                payResultPop.showPop(payMode, price, payMode);
+            } else {
+                payResultPop.showPop(payMode, price, commPrice);
+
+            }
+        }
+
     }
 
 
