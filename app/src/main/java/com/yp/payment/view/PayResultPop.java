@@ -3,8 +3,10 @@ package com.yp.payment.view;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yp.payment.R;
 
@@ -21,6 +23,7 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
         super(context);
     }
 
+    private static final String TAG = "PayResultPop";
     TextView tv_title;
     TextView tv_used_price_title, tv_used_price;
     TextView tv_balance_title, tv_balance;
@@ -63,6 +66,15 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
         this.commPrice = commPrice;
         show();
         setPriceData();
+    }
+
+    public void setNfcResult(String nfcStr) {
+        Log.d(TAG, "setNfcResult: 接收到到 nfc  ="+nfcStr);
+    }
+
+
+    public void setQrcodeResult(String qrCode) {
+        Log.d(TAG, "setQrcodeResult: 接收到到 qrcode  ="+qrCode);
     }
 
     public void setPriceData() {

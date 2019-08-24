@@ -455,20 +455,7 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
                         stoped = true;
                     }
                 }).start();
-//                String m = tv_money.getText().toString();
-//                try {
-//                    double money = Double.parseDouble(m);
-//                    String cardNum = tv_nfc_result.getText().toString();
-//                    if (TextUtils.isEmpty(cardNum)) {
-//                        showToast("请输入会员卡");
-//                        return;
-//                    }
-//                } catch (NumberFormatException e) {
-//                    e.printStackTrace();
-//                    showToast("金额输入有误！");
-//                    return;
-//                }
-//                tv_scan_result.setText(result);//显示解码结果
+                waitCustomerQrCodePay(result);
                 Log.d(TAG, "onPostExecute: " + result);
                 showToast("成功支付");
             }
@@ -732,7 +719,7 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
                     byte[] data = mfc.readBlock(bIndex + 0);
 //                    showToast("读取扇区 == " + ReaderUtils.byteToString(data));
                     Log.d(TAG, "读取卡号 ： " + ReaderUtils.byteToString(data));
-
+                    waitCustomerNfcPay(ReaderUtils.byteToString(data));
                     flag = true;
                 } else {
                     showToast("密码验证失败");
@@ -749,4 +736,33 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
             }
         }
     }
+
+    /**
+     * 等待客户刷nfc支付
+     */
+    public void waitCustomerNfcPay(String nfc) {
+        if (payMode == 1) {
+            if (payResultPop != null && !TextUtils.isEmpty(nfc)) {
+                if (payResultPop.isShowing()) {
+                    payResultPop.setNfcResult(nfc);
+                }
+            }
+        }
+    }
+
+    /**
+     * 等待客户刷码支付
+     */
+    public void waitCustomerQrCodePay(String payCode) {
+        //如果是nfc支付
+        if (payMode == 2 || payMode == 3) {
+            if (payResultPop != null && !TextUtils.isEmpty(payCode)) {
+                if (payResultPop.isShowing()) {
+                    payResultPop.setQrcodeResult(payCode);
+
+                }
+            }
+        }
+    }
+
 }
