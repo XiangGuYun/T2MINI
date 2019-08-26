@@ -54,7 +54,7 @@
 
 
         </activity>
-        <activity android:name=".MoneyActivity">
+        <activity android:name=".ui.MoneyActivity">
 
             <intent-filter>
 

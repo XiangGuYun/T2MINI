@@ -1,4 +1,4 @@
-package com.yp.payment;
+package com.yp.payment.ui;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -37,6 +37,8 @@ import com.sunmi.scan.Image;
 import com.sunmi.scan.ImageScanner;
 import com.sunmi.scan.Symbol;
 import com.sunmi.scan.SymbolSet;
+import com.yp.payment.Consts;
+import com.yp.payment.R;
 import com.yp.payment.adapter.OrderListAdapter;
 import com.yp.payment.adapter.PayModeAdapter;
 import com.yp.payment.entity.DepositorInfo;
@@ -47,6 +49,7 @@ import com.yp.payment.printer.ESCUtil;
 import com.yp.payment.reader.ReaderUtils;
 import com.yp.payment.scanner.FinderView;
 import com.yp.payment.scanner.SoundUtils;
+import com.yp.payment.ui.BaseActivity;
 import com.yp.payment.ui.LoginActivity;
 import com.yp.payment.utils.KeyboardManage;
 import com.yp.payment.view.PayResultPop;
@@ -396,11 +399,10 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
     public void onSettlementClick(double price, double commPrice) {
 
         if (payMode == 4 && depositorInfo == null) {
-            showToast("会员登录");
+            vipLoginPop.show();
             return;
         }
         DecimalFormat df = new DecimalFormat("#0.00");
-        showToast("使用 " + Consts.payModes[payMode] + " 支付了 " + df.format(price));
         if (payMode == 4) {
             payResultPop.showPop(payMode, price, 10000);
         } else {
@@ -408,7 +410,6 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
                 payResultPop.showPop(payMode, price, payMode);
             } else {
                 payResultPop.showPop(payMode, price, commPrice);
-
             }
         }
 
@@ -433,7 +434,6 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
             long cost_time = endTimeMillis - startTimeMillis;
 
             if (nsyms != 0) {
-                playBeepSoundAndVibrate();//解码成功播放提示音
 
                 String qrCode = "";
                 SymbolSet syms = scanner.getResults();//获取解码结果
@@ -453,7 +453,6 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
                 Log.d(TAG, "onPostExecute: 扫码失败");
                 stoped = true;
             } else {
-
                 //扫码成功，等待两秒后再去扫描
                 new Thread(new Runnable() {
                     @Override
@@ -469,13 +468,6 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
                 waitCustomerQrCodePay(result);
                 Log.d(TAG, "onPostExecute: " + result);
                 showToast("成功支付");
-            }
-            if (null == str || str.equals("")) {
-//                Log.d(TAG, "onPostExecute: 没有识别");
-            } else {
-//                Log.d(TAG, "onPostExecute: 扫描结果 == " + str);
-//                showToast(str);
-//                tv_scan_result.setText(str);//显示解码结果
             }
         }
 
@@ -752,7 +744,9 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
      * 等待客户刷nfc支付
      */
     public void waitCustomerNfcPay(String nfc) {
-        if (payMode == 1) {
+        if (vipLoginPop != null && vipLoginPop.isShowing()) {
+            vipLoginPop.setNfcCode(nfc);
+        } else if (payMode == 1) {
             if (payResultPop != null && !TextUtils.isEmpty(nfc)) {
                 if (payResultPop.isShowing()) {
                     payResultPop.setNfcResult(nfc);
@@ -765,15 +759,14 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
      * 等待客户刷码支付
      */
     public void waitCustomerQrCodePay(String payCode) {
-        //如果是nfc支付
+        //如果是微信支付宝支付
         if (payMode == 2 || payMode == 3) {
             if (payResultPop != null && !TextUtils.isEmpty(payCode)) {
                 if (payResultPop.isShowing()) {
+                    playBeepSoundAndVibrate();//解码成功播放提示音
                     payResultPop.setQrcodeResult(payCode);
-
                 }
             }
         }
     }
-
 }

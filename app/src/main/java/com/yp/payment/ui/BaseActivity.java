@@ -1,4 +1,4 @@
-package com.yp.payment;
+package com.yp.payment.ui;
 
 import android.content.Context;
 import android.content.Intent;

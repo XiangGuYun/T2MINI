@@ -55,12 +55,43 @@
         app:layout_constraintRight_toLeftOf="@+id/btn_login_qrcode"
         app:layout_constraintTop_toTopOf="@+id/btn_login_phone" />
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pop_viewpager"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/btn_cancel"
+        app:layout_constraintTop_toBottomOf="@+id/btn_login_card">
+        <include
+            layout="@layout/pop_item_phone"/>
+        <include
+            layout="@layout/pop_item_card"/>
+        <include
+            layout="@layout/pop_item_qrcode"/>
+    </RelativeLayout>
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="#6C6C72"
+        android:gravity="center"
+        android:text="取消"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_login_card" />
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btn_sure_login" />
 
+    <Button
+        android:id="@+id/btn_sure_login"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="#3498DB"
+        android:gravity="center"
+        android:text="确认"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_cancel"
+        app:layout_constraintLeft_toRightOf="@+id/btn_cancel"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_cancel" />
 </android.support.constraint.ConstraintLayout>

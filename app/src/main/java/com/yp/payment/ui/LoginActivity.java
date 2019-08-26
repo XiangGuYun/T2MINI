@@ -10,10 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.yp.payment.BaseActivity;
-import com.yp.payment.MainActivity;
 import com.yp.payment.R;
-import com.yp.payment.MoneyActivity;
 
 /**
  * @author : cp
