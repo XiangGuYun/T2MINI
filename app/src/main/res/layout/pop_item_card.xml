@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pop_card_layout"
     android:layout_width="match_parent"
+    android:visibility="gone"
     android:layout_height="match_parent">
 
     <EditText
@@ -12,6 +14,7 @@
         android:background="@drawable/pop_intpu"
         android:focusable="false"
         android:gravity="center"
+        android:enabled="false"
         android:hint="请刷卡"
         android:inputType="numberDecimal"
         android:textColor="@color/color_666"
