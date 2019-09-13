@@ -11,9 +11,19 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.yp.payment.BaseActivity;
+import com.yp.payment.Constant;
 import com.yp.payment.MainActivity;
 import com.yp.payment.R;
 import com.yp.payment.MoneyActivity;
+import com.yp.payment.dao.ShopConfigDao;
+import com.yp.payment.http.MyCallback;
+import com.yp.payment.internet.LoginRequest;
+import com.yp.payment.internet.LoginResponse;
+import com.yp.payment.internet.MyRetrofit;
+import com.yp.payment.model.ShopConfig;
+import com.yp.payment.utils.GsonUtil;
+
+import retrofit2.Call;
 
 /**
  * @author : cp
@@ -31,6 +41,9 @@ public class LoginActivity extends BaseActivity {
             Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.ACCESS_COARSE_LOCATION};
     final private int REQUEST_PERMISSION_CODE = 20001;
 
+    public static String deviceId;
+
+    public ShopConfigDao shopConfigDao;
     @Override
     public int layoutId() {
         return R.layout.activity_login;
@@ -43,6 +56,7 @@ public class LoginActivity extends BaseActivity {
         findViewById(R.id.btn_login_user).setOnClickListener(onClickListener);
         checkBluetoothPermission();
 
+        deviceId = android.os.Build.SERIAL;
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -55,19 +69,63 @@ public class LoginActivity extends BaseActivity {
     void loginAdmin() {
         String user_account = edit_user_account.getText().toString().trim();
         String user_psw = edit_user_psw.getText().toString().trim();
-        if (TextUtils.isEmpty(user_account)) {
+        /*if (TextUtils.isEmpty(user_account)) {
             showToast(getResString(R.string.invalid_account));
             return;
         } else if (TextUtils.isEmpty(user_psw)) {
             showToast(getResString(R.string.invalid_psw));
             return;
-        }
-        openActivity(MoneyActivity.class);
-        finish();
+        }*/
+
+        final LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setDeviceId(LoginActivity.deviceId);
+        loginRequest.setUsername(user_account);
+        loginRequest.setPassword(user_psw);
+        loginRequest.setUsername("18312345678");
+        loginRequest.setPassword("000000");
+
+        Log.d(TAG, "loginRequest==" + GsonUtil.GsonString(loginRequest));
+
+        MyRetrofit.getApiService().init(loginRequest).enqueue(new MyCallback<LoginResponse>() {
+
+            @Override
+            public void onSuccess(LoginResponse loginResponse) {
+                Log.d(TAG, "loginResponse==" + loginResponse);
+
+                if (loginResponse.getCode() == 200) {
+                    Constant.shopId = loginResponse.getData().getShopId();
+                    Constant.cashierDeskId = loginResponse.getData().getCashierDeskId();
+
+                    shopConfigDao.insertData(Constant.shopId, Constant.cashierDeskId);
+                    openActivity(MoneyActivity.class);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+
+                Log.d(TAG, "loginResponse onFailure==" + t.getMessage());
+//                showToast("网络异常");
+                super.onFailure(call, t);
+            }
+        });
+
+//        finish();
+
+
     }
 
     @Override
     public void initData() {
+        shopConfigDao = new ShopConfigDao(this);
+
+        ShopConfig shopConfig = shopConfigDao.query();
+
+        if (shopConfig != null) {
+            Constant.shopId = shopConfig.getShopId();
+            Constant.cashierDeskId = shopConfig.getCashierDeskId();
+            openActivity(MoneyActivity.class);
+        }
     }
 
     /*

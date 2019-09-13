@@ -58,6 +58,8 @@ public class KeyboardManage implements KeyBoardCallback, RecommendPriceCallback 
         public void onClick(View v) {
             try {
                 double price = Double.parseDouble(tv_input_cash.getText().toString());
+
+                Log.d(TAG, "price==" + price);
                 settlementCallback.onSettlementClick(price, 0);
             } catch (NumberFormatException e) {
                 e.printStackTrace();

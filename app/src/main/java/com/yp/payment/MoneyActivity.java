@@ -74,7 +74,7 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
     RecyclerView order_recyclerview;
 
     /**
-     * 支付方式,默认现金
+     * 支付方式,默认线上支付
      */
     int payMode = 0;
     PayModeAdapter payModeAdapter;
@@ -128,6 +128,7 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
     public static SunmiReader sunmireader = new SunmiReader();
     NfcAdapter mNfcAdapter;
     PendingIntent pi;
+    String packageName;
 
     @Override
     public int layoutId() {
@@ -144,10 +145,12 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
         initKeyboard();
         initPayMode();
         vipLoginPop = new VipLoginPop(this);
-        payResultPop = new PayResultPop(this);
+        packageName = getPackageName();
+        payResultPop = new PayResultPop(this, packageName);
         initVipModel();
         initReadCard();
         initCamera();
+
     }
 
     private void initCamera() {
@@ -394,22 +397,17 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onSettlementClick(double price, double commPrice) {
-
+        Log.d(TAG, "price==" + price + "; commPrice====" + commPrice + "; payMode==" + payMode);
         if (payMode == 4 && depositorInfo == null) {
             showToast("会员登录");
             return;
         }
         DecimalFormat df = new DecimalFormat("#0.00");
-        showToast("使用 " + Consts.payModes[payMode] + " 支付了 " + df.format(price));
-        if (payMode == 4) {
-            payResultPop.showPop(payMode, price, 10000);
+//        showToast("使用 " + Consts.payModes[payMode] + " 支付了 " + df.format(price));
+        if (commPrice > 0) {
+            payResultPop.showPop(payMode, commPrice, payMode);
         } else {
-            if (commPrice == 0) {
-                payResultPop.showPop(payMode, price, payMode);
-            } else {
-                payResultPop.showPop(payMode, price, commPrice);
-
-            }
+            payResultPop.showPop(payMode, price, payMode);
         }
 
     }
@@ -450,7 +448,7 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
             super.onPostExecute(result);
 
             if (TextUtils.isEmpty(result)) {
-                Log.d(TAG, "onPostExecute: 扫码失败");
+                Log.d(TAG, "onPostExecute: 扫码失败===");
                 stoped = true;
             } else {
 
@@ -467,7 +465,7 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
                     }
                 }).start();
                 waitCustomerQrCodePay(result);
-                Log.d(TAG, "onPostExecute: " + result);
+                Log.d(TAG, "onPostExecute===: " + result);
                 showToast("成功支付");
             }
             if (null == str || str.equals("")) {
@@ -705,6 +703,7 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
         //intent就是onNewIntent方法返回的那个intent
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         MifareClassic mfc = MifareClassic.get(tag);
+        Log.d(TAG, "tag=== ： " + tag);
         //如果当前IC卡不是这个格式的mfc就会为空
         if (null != mfc) {
             try {
@@ -712,29 +711,38 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
                 mfc.connect();
                 //获取扇区数量
                 int count = mfc.getSectorCount();
+                Log.d(TAG, "count=== ： " + count);
                 //用于判断时候有内容读取出来
                 boolean flag = false;
-                byte[] bytes = {(byte) 0xff, (byte) 0xff, (byte) 0xff,
-                        (byte) 0xff, (byte) 0xff, (byte) 0xff};
+                byte[] bytes = {(byte) 0x94, (byte) 0x04, (byte) 0x30,
+                        (byte) 0xDe, (byte) 0xf3, (byte) 0x06};
+
+//                bytes = "940430Def306".getBytes();
 //                    //验证扇区密码，否则会报错（链接失败错误）
 //                    //这里验证的是密码A，如果想验证密码B也行，将方法中的A换成B就行
+//                boolean isOpen = mfc.authenticateSectorWithKeyB(0, bytes);
                 boolean isOpen = mfc.authenticateSectorWithKeyA(0, bytes);
-                if (isOpen) {
+
+                Log.d(TAG, "isOpen=== ： " + isOpen);
+                if (true) {
 //                        //获取扇区里面块的数量
                     int bCount = mfc.getBlockCountInSector(0);
+                    Log.d(TAG, "bCount=== ： " + bCount);
                     //获取扇区第一个块对应芯片存储器的位置
                     //（我是这样理解的，因为第0扇区的这个值是4而不是0）
                     int bIndex = mfc.sectorToBlock(0);
+                    Log.d(TAG, "bIndex=== ： " + bIndex);
                     //读取数据，这里是循环读取全部的数据
                     //如果要读取特定扇区的特定块，将i，j换为固定值就行
                     byte[] data = mfc.readBlock(bIndex + 0);
+                    Log.d(TAG, "data=== ： " + data);
 //                    showToast("读取扇区 == " + ReaderUtils.byteToString(data));
-                    Log.d(TAG, "读取卡号 ： " + ReaderUtils.byteToString(data));
-                    waitCustomerNfcPay(ReaderUtils.byteToString(data));
+                    String cardNo = ReaderUtils.byteToString(data);
+                    Log.d(TAG, "读取卡号 ===： " + cardNo);
+                    waitCustomerNfcPay(cardNo);
                     flag = true;
                 } else {
                     showToast("密码验证失败");
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -752,13 +760,13 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
      * 等待客户刷nfc支付
      */
     public void waitCustomerNfcPay(String nfc) {
-        if (payMode == 1) {
+//        if (payMode == 1) {
             if (payResultPop != null && !TextUtils.isEmpty(nfc)) {
                 if (payResultPop.isShowing()) {
                     payResultPop.setNfcResult(nfc);
                 }
             }
-        }
+//        }
     }
 
     /**
@@ -766,14 +774,14 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
      */
     public void waitCustomerQrCodePay(String payCode) {
         //如果是nfc支付
-        if (payMode == 2 || payMode == 3) {
+//        if (payMode == 2 || payMode == 3) {
             if (payResultPop != null && !TextUtils.isEmpty(payCode)) {
                 if (payResultPop.isShowing()) {
                     payResultPop.setQrcodeResult(payCode);
 
                 }
             }
-        }
+//        }
     }
 
 }

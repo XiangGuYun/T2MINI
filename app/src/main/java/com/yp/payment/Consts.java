@@ -8,6 +8,8 @@ package com.yp.payment;
  */
 public class Consts {
 
-    public static String payModes[] = {"现金", "NFC卡", "支付宝", "微信支付", "储值支付"};
-    public static int payModeIcons[] = {R.drawable.icon_cash, R.drawable.icon_nfc, R.drawable.icon_alipay, R.drawable.icon_wechat, R.drawable.icon_card};
+    public static String payModes[] = {"线上支付", "现金"};
+//    public static String payModes[] = {"现金", "线上支付", "支付宝", "微信支付", "储值支付"};
+    public static int payModeIcons[] = {R.drawable.icon_nfc , R.drawable.icon_cash};
+//    public static int payModeIcons[] = {R.drawable.icon_cash, R.drawable.icon_nfc, R.drawable.icon_alipay, R.drawable.icon_wechat, R.drawable.icon_card};
 }

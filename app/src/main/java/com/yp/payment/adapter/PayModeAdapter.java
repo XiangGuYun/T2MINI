@@ -3,6 +3,7 @@ package com.yp.payment.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.yp.payment.R;
 import com.yp.payment.interfaces.PayModeCallback;
 
 public class PayModeAdapter extends RecyclerView.Adapter<PayModeAdapter.ViewHolder> {
+    private static final String TAG = "PayModeAdapter";
     Context mContext;
     PayModeCallback payModeCallback;
 
@@ -36,6 +38,7 @@ public class PayModeAdapter extends RecyclerView.Adapter<PayModeAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
 
+        Log.d(TAG, "onBindViewHolder,i===" + i);
         viewHolder.item_iv_pay_mode_icon.setImageResource(Consts.payModeIcons[i]);
         viewHolder.item_tv_pay_mode_name.setText(Consts.payModes[i]);
 
@@ -58,7 +61,7 @@ public class PayModeAdapter extends RecyclerView.Adapter<PayModeAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return 5;
+        return Consts.payModeIcons.length;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
