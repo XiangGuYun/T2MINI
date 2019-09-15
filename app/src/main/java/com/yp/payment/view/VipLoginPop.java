@@ -43,9 +43,9 @@ public class VipLoginPop extends Dialog implements View.OnClickListener {
         params.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE;
         _window.setAttributes(params);
         setContentView(R.layout.pop_vip_login);
-        btn_login_phone = findViewById(R.id.btn_login_phone);
-        btn_login_qrcode = findViewById(R.id.btn_login_qrcode);
-        btn_login_card = findViewById(R.id.btn_login_card);
+//        btn_login_phone = findViewById(R.id.btn_login_phone);
+//        btn_login_qrcode = findViewById(R.id.btn_login_qrcode);
+//        btn_login_card = findViewById(R.id.btn_login_card);
         pop_phone_layout = findViewById(R.id.pop_phone_layout);
         pop_card_layout = findViewById(R.id.pop_card_layout);
         pop_qrcode_layout = findViewById(R.id.pop_qrcode_layout);
@@ -73,7 +73,7 @@ public class VipLoginPop extends Dialog implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
+        /*switch (v.getId()) {
             case R.id.btn_login_phone:
                 btn_login_phone.setTextColor(getContext().getResources().getColor(R.color.pop_select_text));
                 btn_login_card.setTextColor(getContext().getResources().getColor(R.color.color_999));
@@ -109,7 +109,7 @@ public class VipLoginPop extends Dialog implements View.OnClickListener {
                 break;
             default:
                 break;
-        }
+        }*/
     }
 
     void login() {

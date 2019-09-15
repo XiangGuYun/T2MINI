@@ -11,9 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.yp.payment.Constant;
-import com.yp.payment.MainActivity;
 import com.yp.payment.R;
-import com.yp.payment.MoneyActivity;
 import com.yp.payment.dao.ShopConfigDao;
 import com.yp.payment.http.MyCallback;
 import com.yp.payment.internet.LoginRequest;
@@ -80,8 +78,8 @@ public class LoginActivity extends BaseActivity {
         loginRequest.setDeviceId(LoginActivity.deviceId);
         loginRequest.setUsername(user_account);
         loginRequest.setPassword(user_psw);
-        loginRequest.setUsername("18312345678");
-        loginRequest.setPassword("000000");
+//        loginRequest.setUsername("18312345678");
+//        loginRequest.setPassword("000000");
 
         Log.d(TAG, "loginRequest==" + GsonUtil.GsonString(loginRequest));
 
@@ -94,8 +92,11 @@ public class LoginActivity extends BaseActivity {
                 if (loginResponse.getCode() == 200) {
                     Constant.shopId = loginResponse.getData().getShopId();
                     Constant.cashierDeskId = loginResponse.getData().getCashierDeskId();
+                    Constant.curUsername = loginRequest.getUsername();
+                    Constant.shopName = loginResponse.getData().getShopName();
 
-                    shopConfigDao.insertData(Constant.shopId, Constant.cashierDeskId);
+                    shopConfigDao.insertData(Constant.shopId, Constant.cashierDeskId,
+                            Constant.shopName, loginRequest.getUsername());
                     openActivity(MoneyActivity.class);
                 }
             }
@@ -120,9 +121,11 @@ public class LoginActivity extends BaseActivity {
 
         ShopConfig shopConfig = shopConfigDao.query();
 
-        if (shopConfig != null) {
+        if (shopConfig != null && shopConfig.getAutoLogin().intValue() == 1) {
             Constant.shopId = shopConfig.getShopId();
             Constant.cashierDeskId = shopConfig.getCashierDeskId();
+            Constant.curUsername = shopConfig.getUsername();
+            Constant.shopName = shopConfig.getShopName();
             openActivity(MoneyActivity.class);
         }
     }

@@ -1,4 +1,4 @@
-package com.yp.payment;
+package com.yp.payment.ui;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -6,19 +6,25 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Rect;
 import android.hardware.Camera;
+import android.hardware.camera2.CameraAccessException;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.MifareClassic;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.os.Vibrator;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -37,28 +43,50 @@ import com.sunmi.scan.Image;
 import com.sunmi.scan.ImageScanner;
 import com.sunmi.scan.Symbol;
 import com.sunmi.scan.SymbolSet;
+import com.yp.payment.Constant;
+import com.yp.payment.R;
 import com.yp.payment.adapter.OrderListAdapter;
 import com.yp.payment.adapter.PayModeAdapter;
+import com.yp.payment.dao.OrderDao;
+import com.yp.payment.dao.ShopConfigDao;
 import com.yp.payment.entity.DepositorInfo;
+import com.yp.payment.http.MyCallback;
 import com.yp.payment.interfaces.PayModeCallback;
 import com.yp.payment.interfaces.SettlementCallback;
+import com.yp.payment.internet.GetBalanceRequest;
+import com.yp.payment.internet.MyRetrofit;
+import com.yp.payment.internet.orderresp.JsonsRootBean;
+import com.yp.payment.model.GetBalanceResponse;
+import com.yp.payment.model.OrderDetail;
 import com.yp.payment.printer.BluetoothUtil;
 import com.yp.payment.printer.ESCUtil;
 import com.yp.payment.reader.ReaderUtils;
 import com.yp.payment.scanner.FinderView;
 import com.yp.payment.scanner.SoundUtils;
+import com.yp.payment.ui.BaseActivity;
 import com.yp.payment.ui.LoginActivity;
+import com.yp.payment.utils.GsonUtil;
 import com.yp.payment.utils.KeyboardManage;
+import com.yp.payment.utils.MsgSynchTask;
+import com.yp.payment.utils.PriceUtil;
 import com.yp.payment.view.PayResultPop;
 import com.yp.payment.view.VipLoginPop;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import retrofit2.Call;
 import sunmi.ds.DSKernel;
 import sunmi.ds.callback.IConnectionCallback;
 import sunmi.ds.callback.IReceiveCallback;
@@ -86,7 +114,7 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
      * 会员登录
      */
     VipLoginPop vipLoginPop;
-    TextView tv_vip_num, tv_vip_phone;
+    TextView tv_vip_num, tv_shop_name, tv_vip_phone, btn_vip_login;
     /**
      * 结算弹窗
      */
@@ -95,7 +123,6 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
      * 储户信息
      */
     DepositorInfo depositorInfo;
-    TextView btn_vip_login;
     /**
      * 扫码
      */
@@ -130,6 +157,30 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
     PendingIntent pi;
     String packageName;
 
+    OrderDao orderDao;
+    ShopConfigDao shopConfigDao;
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 17) {
+                tv_vip_phone.setText("系统升级中...请稍候操作");
+                return;
+            } else if (msg.what == 19) {
+                playMusic(4);
+            } else if (msg.what == 20) {
+                lcdShowText(Constant.curPrice + "元");
+            } else if (msg.what == 21) {
+                lcdShowText("支付成功");
+            } else if (msg.what == 22) {
+                lcdShowText("云澎科技");
+//                clearLcd();
+            } else if (msg.what == 23) {
+                lcdTwoLine();
+            }
+
+        }
+    };
     @Override
     public int layoutId() {
         return R.layout.activity_pay_page;
@@ -140,17 +191,41 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
         myHandler = new MyHandler(this);
         findViewById(R.id.iv_exit).setOnClickListener(this);
         findViewById(R.id.btn_print).setOnClickListener(this);
+
+        View refundBtn = findViewById(R.id.refund);
+        refundBtn.setVisibility(View.GONE);
         hideNavigation();
-        initOrderList();
+
+        OrderListAdapter orderListAdapter = new OrderListAdapter(this);
+        orderDao = new OrderDao(this);
+        shopConfigDao = new ShopConfigDao(this);
+
+        initOrderList(orderListAdapter);
         initKeyboard();
         initPayMode();
         vipLoginPop = new VipLoginPop(this);
         packageName = getPackageName();
-        payResultPop = new PayResultPop(this, packageName);
+        payResultPop = new PayResultPop(this, packageName, orderDao, orderListAdapter, shopConfigDao, handler);
         initVipModel();
         initReadCard();
         initCamera();
 
+
+
+        ScheduledExecutorService scheduledExecutorServiceWithMsg = Executors.newScheduledThreadPool(10);
+        scheduledExecutorServiceWithMsg.scheduleWithFixedDelay(new MsgSynchTask(this, handler),
+                30, 10, TimeUnit.SECONDS);
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Intent intent = new Intent();
+        intent.setPackage("woyou.aidlservice.jiuiv5");
+        intent.setAction("woyou.aidlservice.jiuiv5.IWoyouService");
+        bindService(intent, connService, Context.BIND_AUTO_CREATE);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
     private void initCamera() {
@@ -184,8 +259,18 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
     void initVipModel() {
         btn_vip_login = findViewById(R.id.btn_vip_login);
         btn_vip_login.setOnClickListener(this);
+
+        if (shopConfigDao.query().getAutoPrint().intValue() == 1) {
+            btn_vip_login.setText("设置为不自动打印");
+        }else {
+            btn_vip_login.setText("设置为自动打印");
+        }
+
         tv_vip_num = findViewById(R.id.tv_vip_num);
+        tv_shop_name = findViewById(R.id.tv_shop_name);
         tv_vip_phone = findViewById(R.id.tv_vip_phone);
+        tv_vip_num.setText("会员号：" + Constant.curUsername);
+        tv_shop_name.setText(Constant.shopName);
     }
 
     @Override
@@ -206,11 +291,14 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
     /**
      * 历史订单列表
      */
-    void initOrderList() {
+    void initOrderList(OrderListAdapter orderListAdapter) {
+        Constant.curOrderList = orderDao.queryOrderList();
         order_recyclerview = findViewById(R.id.order_recyclerview);
         order_recyclerview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        OrderListAdapter orderListAdapter = new OrderListAdapter(this);
+
         order_recyclerview.setAdapter(orderListAdapter);
+
+
     }
 
     /**
@@ -235,7 +323,7 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
         mDSKernel.removeReceiveCallback(mIReceiveCallback2);
     }
 
-    private void printOrder() {
+    public void printOrder(OrderDetail orderDetail) {
         // 1: Get BluetoothAdapter
         BluetoothAdapter btAdapter = BluetoothUtil.getBTAdapter();
         if (btAdapter == null) {
@@ -253,8 +341,9 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
                     Toast.LENGTH_LONG).show();
             return;
         }
+
         // 3: Generate a order data
-        byte[] data = ESCUtil.generateMockData();
+        byte[] data = ESCUtil.generateMockData(orderDetail);
         // 4: Using InnerPrinter print data
         BluetoothSocket socket = null;
         try {
@@ -270,12 +359,16 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
             }
         }
     }
+    public void printOrder() {
+        OrderDetail orderDetail = Constant.curOrderList.get(Constant.curOrderSeq);
+        printOrder(orderDetail);
+    }
 
     /**
      * 键盘输入
      */
     void initKeyboard() {
-        new KeyboardManage(this, findViewById(R.id.rootView), this);
+        new KeyboardManage(this, findViewById(R.id.rootView), this, handler);
     }
 
 
@@ -283,6 +376,7 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_exit:
+                shopConfigDao.updateExit();
                 openActivity(LoginActivity.class);
                 finish();
                 break;
@@ -290,11 +384,12 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
                 printOrder();
                 break;
             case R.id.btn_vip_login:
-                if (depositorInfo == null) {
-                    vipLoginPop.show();
-                } else {
-                    btn_vip_login.setText("会员登录");
-                    depositorInfo = null;
+                if (shopConfigDao.query().getAutoPrint().intValue() == 1) {
+                    shopConfigDao.updatePrintState(0);
+                    btn_vip_login.setText("设置为自动打印");
+                }else {
+                    shopConfigDao.updatePrintState(1);
+                    btn_vip_login.setText("设置为不自动打印");
                 }
                 break;
             default:
@@ -620,7 +715,9 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d(TAG, "onServiceConnected=== ： ");
             woyouService = IWoyouService.Stub.asInterface(service);
+            Log.d(TAG, "onServiceConnected=woyouService==== ： " + woyouService);
             readyLcd();
         }
     };
@@ -629,14 +726,21 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
      * 副屏准备
      */
     private void readyLcd() {
+
         if (woyouService == null) {
+            Log.d(TAG, "Service not ready=== ： ");
             Toast.makeText(this, "Service not ready", Toast.LENGTH_SHORT).show();
             return;
         }
         try {
+            Log.d(TAG, "woyouService.sendLCDCommand===1 ： ");
             woyouService.sendLCDCommand(1);
+            Log.d(TAG, "woyouService.sendLCDCommand=== 1： ");
+
+            lcdShowText("云澎科技");
         } catch (RemoteException e) {
             e.printStackTrace();
+            Log.d(TAG, "woyouService.sendLCDCommand, error=== ： " + e.getMessage());
         }
     }
 
@@ -645,12 +749,15 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
      */
     public void clearLcd() {
         if (woyouService == null) {
+            Log.d(TAG, "clearLcd Service not ready === ： ");
             Toast.makeText(this, "Service not ready", Toast.LENGTH_SHORT).show();
             return;
         }
 
         try {
+            Log.d(TAG, "woyouService.sendLCDCommand=== 4： ");
             woyouService.sendLCDCommand(4);
+            Log.d(TAG, "woyouService.sendLCDCommand=== 4： ");
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -665,21 +772,27 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
             return;
         }
         try {
-            woyouService.sendLCDDoubleString("Total:€999.99", "Change:¥999.99", null);
+            woyouService.sendLCDDoubleString(Constant.payUser, "余额:" + Constant.payBanlance, null);
+
+            Constant.payUser = "";
+            Constant.payBanlance = "";
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
     public void lcdShowText(String msg) {
+        Log.d(TAG, "lcdShowText=== ： " + msg);
         if (woyouService == null) {
             Toast.makeText(this, "Service not ready", Toast.LENGTH_SHORT).show();
             return;
         }
         try {
+            Log.d(TAG, "sendLCDString=== ： " + msg);
             woyouService.sendLCDString(msg, null);
         } catch (RemoteException e) {
             e.printStackTrace();
+            Log.d(TAG, "lcdShowText=== ： " + e.getMessage());
         }
     }
 
@@ -760,6 +873,40 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
      * 等待客户刷nfc支付
      */
     public void waitCustomerNfcPay(String nfc) {
+        if(!Constant.startPay){
+            GetBalanceRequest getBalanceRequest = new GetBalanceRequest();
+            getBalanceRequest.setCardNo(nfc);
+            getBalanceRequest.setShopId(Constant.shopId);
+            getBalanceRequest.setDeviceId(LoginActivity.deviceId);
+            MyRetrofit.getApiService().getBanlance(getBalanceRequest).enqueue(new MyCallback<GetBalanceResponse>() {
+                @Override
+                public void onSuccess(GetBalanceResponse getBalanceResponse) {
+                    Log.d(TAG, "getBalanceResponse===: " + GsonUtil.GsonString(getBalanceResponse));
+
+                    Constant.startPay = false;
+                    if (getBalanceResponse.getCode() == 200) {
+                        Constant.payUser = getBalanceResponse.getData().getUsername();
+                        Constant.payBanlance = PriceUtil.changeF2Y(Long.valueOf(getBalanceResponse.getData().getBalance())) + "元";
+                        lcdTwoLine();
+                    } else {
+                        lcdShowText(getBalanceResponse.getMessage());
+                    }
+
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            handler.sendEmptyMessage(22);
+                        }
+                    }, 4000);
+                }
+
+                @Override
+                public void onFailure(Call<GetBalanceResponse> call, Throwable t) {
+                    super.onFailure(call, t);
+                }
+            });
+            return;
+        }
 //        if (payMode == 1) {
             if (payResultPop != null && !TextUtils.isEmpty(nfc)) {
                 if (payResultPop.isShowing()) {
@@ -773,6 +920,11 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
      * 等待客户刷码支付
      */
     public void waitCustomerQrCodePay(String payCode) {
+
+        if(!Constant.startPay){
+            playMusic(5);
+            return;
+        }
         //如果是nfc支付
 //        if (payMode == 2 || payMode == 3) {
             if (payResultPop != null && !TextUtils.isEmpty(payCode)) {
@@ -784,4 +936,36 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
 //        }
     }
 
+
+    MediaPlayer mediaPlayer;
+
+    void playMusic(int type) {
+
+        if (mediaPlayer == null) {
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    Log.d(TAG, "onPrepared: ");
+                    mp.start();
+                }
+            });
+        }
+        mediaPlayer.reset();
+        if (type == 4) {//  -
+            try {
+                mediaPlayer.setDataSource(this, Uri.parse("android.resource://" + packageName + "/" + R.raw.input));
+                mediaPlayer.prepareAsync();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (type == 5) {
+            try {
+                mediaPlayer.setDataSource(this, Uri.parse("android.resource://" + packageName + "/" + R.raw.notstart));
+                mediaPlayer.prepareAsync();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

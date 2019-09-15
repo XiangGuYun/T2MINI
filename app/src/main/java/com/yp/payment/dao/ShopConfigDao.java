@@ -18,13 +18,31 @@ public class ShopConfigDao {
         mDatabase = mHelper.getWritableDatabase();
     }
 
-    public void insertData(Integer shopId, Integer cashierDeskId) {
+    public void insertData(Integer shopId, Integer cashierDeskId,
+                           String shopName, String username) {
         delete();
 
         ContentValues values = new ContentValues();
         values.put("shopId", shopId);
         values.put("cashierDeskId", cashierDeskId);
+        values.put("shopName", shopName);
+        values.put("username", username);
+        values.put("autoLogin", 1);
+        values.put("autoPrint", 0);
         mDatabase.insert("shopConfig", null, values);
+    }
+
+    public void updateExit(){
+        ContentValues values = new ContentValues();
+        values.put("autoLogin", "0");
+        mDatabase.update("shopConfig", values, " id > 0 ", null);
+    }
+
+
+    public void updatePrintState(int state){
+        ContentValues values = new ContentValues();
+        values.put("autoPrint", state);
+        mDatabase.update("shopConfig", values, " id > 0 ", null);
     }
 
     public void delete() {
@@ -43,6 +61,10 @@ public class ShopConfigDao {
             ShopConfig shopConfig = new ShopConfig();
             shopConfig.setShopId(cursor.getInt(1));
             shopConfig.setCashierDeskId(cursor.getInt(2));
+            shopConfig.setShopName(cursor.getString(3));
+            shopConfig.setUsername(cursor.getString(4));
+            shopConfig.setAutoLogin(cursor.getInt(5));
+            shopConfig.setAutoPrint(cursor.getInt(6));
             return shopConfig;
         }
 

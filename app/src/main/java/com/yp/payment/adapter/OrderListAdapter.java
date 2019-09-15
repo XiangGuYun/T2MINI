@@ -4,16 +4,22 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yp.payment.Constant;
 import com.yp.payment.R;
+import com.yp.payment.model.OrderDetail;
 
 public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.ViewHolder> {
+    private static final String TAG = "OrderListAdapter";
     Context mContext;
+
+    int selectedMode = 0;
 
     public OrderListAdapter(Context mContext) {
         this.mContext = mContext;
@@ -28,43 +34,54 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        switch (i) {
-            case 0:
 
-                viewHolder.item_tv_mpde_tag.setBackgroundResource(R.drawable.item_list_cash);
-                viewHolder.item_tv_mpde_tag.setText("现金");
-                viewHolder.item_tv_mpde_tag.setTextColor(mContext.getResources().getColor(R.color.color_cash));
-                break;
+        OrderDetail orderDetail = Constant.curOrderList.get(i);
 
-            case 1:
-                viewHolder.item_tv_mpde_tag.setBackgroundResource(R.drawable.item_list_ali);
-                viewHolder.item_tv_mpde_tag.setText("支付宝");
-                viewHolder.item_tv_mpde_tag.setTextColor(mContext.getResources().getColor(R.color.color_ali));
-                viewHolder.item_order_list_bg.setBackgroundColor(mContext.getResources().getColor(R.color.unselect_pay_mode));
-                break;
-            case 2:
-                viewHolder.item_tv_mpde_tag.setBackgroundResource(R.drawable.item_list_wecha);
-                viewHolder.item_tv_mpde_tag.setTextColor(mContext.getResources().getColor(R.color.color_wechat));
-                viewHolder.item_tv_mpde_tag.setText("微信支付");
-                break;
-            case 3:
-                viewHolder.item_tv_mpde_tag.setBackgroundResource(R.drawable.item_list_cash);
-                viewHolder.item_tv_mpde_tag.setText("现金");
-                viewHolder.item_tv_mpde_tag.setBackgroundResource(R.drawable.item_list_cash);
-                viewHolder.item_tv_mpde_tag.setText("现金");
-                viewHolder.item_tv_mpde_tag.setTextColor(mContext.getResources().getColor(R.color.color_cash));
-                break;
-            case 4:
-                viewHolder.item_tv_mpde_tag.setBackgroundResource(R.drawable.item_list_wecha);
-                viewHolder.item_tv_mpde_tag.setTextColor(mContext.getResources().getColor(R.color.color_wechat));
-                viewHolder.item_tv_mpde_tag.setText("微信支付");
-                break;
+        viewHolder.item_order_list_bg.setTag(i);
+
+        viewHolder.item_tv_pay_date.setText(orderDetail.getDateTime());
+
+        if (orderDetail.getOrderType().intValue() == 2) {//支付类型 0：二维码支付，1：人脸支付，2：实体卡支付，3：其他支付,  4:商户扫码支付
+            viewHolder.item_tv_mpde_tag.setBackgroundResource(R.drawable.item_list_wecha);
+            viewHolder.item_tv_mpde_tag.setTextColor(mContext.getResources().getColor(R.color.color_wechat));
+            viewHolder.item_tv_mpde_tag.setText("刷卡");
+        } else if (orderDetail.getOrderType().intValue() == 3) {
+            viewHolder.item_tv_mpde_tag.setBackgroundResource(R.drawable.item_list_cash);
+            viewHolder.item_tv_mpde_tag.setText("现金");
+            viewHolder.item_tv_mpde_tag.setTextColor(mContext.getResources().getColor(R.color.color_cash));
+        } else if (orderDetail.getOrderType().intValue() == 4) {
+            viewHolder.item_tv_mpde_tag.setBackgroundResource(R.drawable.item_list_ali);
+            viewHolder.item_tv_mpde_tag.setText("二维码");
+            viewHolder.item_tv_mpde_tag.setTextColor(mContext.getResources().getColor(R.color.color_ali));
+            viewHolder.item_order_list_bg.setBackgroundColor(mContext.getResources().getColor(R.color.unselect_pay_mode));
         }
+
+        viewHolder.item_tv_pay_price.setText("￥" + orderDetail.getPrice());
+
+        if (selectedMode == i) {
+            viewHolder.item_order_list_bg.setBackgroundResource(R.color.unselect_pay_mode);
+        } else {
+            viewHolder.item_order_list_bg.setBackgroundResource(R.color.white);
+        }
+
+        viewHolder.item_order_list_bg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "v.getTag()====: " + v.getTag());
+
+                int pos = (int) v.getTag();
+                Constant.curOrderSeq = pos;
+
+                selectedMode = pos;
+
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return 5;
+        return Constant.curOrderList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

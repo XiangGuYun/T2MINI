@@ -1,6 +1,10 @@
 package com.yp.payment.internet;
 
 
+import com.yp.payment.internet.orderresp.JsonsRootBean;
+import com.yp.payment.model.GetBalanceResponse;
+import com.yp.payment.model.SyncDataEntity;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -15,7 +19,13 @@ public interface Api {
 
 
     @POST("/api/order/createShangMi")
-    Call<ShangMiOrderResponse> createShangMi(@Body ShangMiOrderRequest entity);
+    Call<JsonsRootBean> createShangMi(@Body ShangMiOrderRequest entity);
 
+
+    @POST("zjypg/syncData")
+    Call<SyncDataEntity> syncData(@Body SyncDataRequest entity);
+
+    @POST("zjypg/getBanlance")
+    Call<GetBalanceResponse> getBanlance(@Body GetBalanceRequest entity);
 
 }

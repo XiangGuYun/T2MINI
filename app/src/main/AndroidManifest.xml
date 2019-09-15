@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -21,6 +23,8 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" android:protectionLevel="signature"/>
+
 
     <!--读卡器-->
     <uses-permission android:name="android.permission.NFC" />
@@ -55,7 +59,7 @@
 
 
         </activity>
-        <activity android:name=".ui.MoneyActivity">
+        <activity android:name="com.yp.payment.ui.MoneyActivity">
 
             <intent-filter>
 
@@ -72,6 +76,21 @@
             <intent-filter>
                 <action android:name="com.sunmi.hcservice" />
                 <action android:name="com.sunmi.hcservice.status" />
+            </intent-filter>
+        </receiver>
+
+
+
+        <receiver android:name="com.yp.payment.utils.BootCompletedReceiver">
+            <intent-filter android:priority="999">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.yp.payment.utils.AppInstallReceiver"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <data android:scheme="package" />
             </intent-filter>
         </receiver>
     </application>

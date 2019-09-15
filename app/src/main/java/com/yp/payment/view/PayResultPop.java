@@ -5,6 +5,8 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -12,14 +14,23 @@ import android.widget.Toast;
 
 import com.yp.payment.Constant;
 import com.yp.payment.R;
+import com.yp.payment.adapter.OrderListAdapter;
+import com.yp.payment.dao.OrderDao;
+import com.yp.payment.dao.ShopConfigDao;
 import com.yp.payment.http.MyCallback;
 import com.yp.payment.internet.MyRetrofit;
 import com.yp.payment.internet.ShangMiOrderRequest;
 import com.yp.payment.internet.ShangMiOrderResponse;
+import com.yp.payment.internet.orderresp.JsonsRootBean;
+import com.yp.payment.model.OrderDetail;
+import com.yp.payment.ui.MoneyActivity;
 import com.yp.payment.utils.GsonUtil;
+import com.yp.payment.utils.PriceUtil;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -34,10 +45,33 @@ import retrofit2.Call;
 public class PayResultPop extends Dialog implements View.OnClickListener {
     String packageName;
     Context context;
-    public PayResultPop(Context context, String packageName) {
+    OrderDao orderDao;
+    ShopConfigDao shopConfigDao;
+    OrderListAdapter orderListAdapter;
+
+    Handler superHandler;
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 18) {
+                hide();
+                return;
+            }
+
+        }
+    };
+
+    public PayResultPop(Context context, String packageName, OrderDao orderDao,
+                        OrderListAdapter orderListAdapter, ShopConfigDao shopConfigDao, Handler handler
+                        ) {
         super(context);
         this.context = context;
         this.packageName = packageName;
+        this.orderDao = orderDao;
+        this.orderListAdapter = orderListAdapter;
+        this.shopConfigDao = shopConfigDao;
+        this.superHandler = handler;
     }
 
     private static final String TAG = "PayResultPop";
@@ -47,6 +81,7 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
     TextView tv_small_change_title, tv_small_change;
     TextView tv_cancle;
     DecimalFormat df = new DecimalFormat("#0.00");
+    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     boolean orderRequesting = false;
     /**
@@ -62,6 +97,8 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
      * 现金：实际给的；会员卡：卡内余额
      */
     double commPrice;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +118,10 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
             public void onClick(View v) {
                 orderRequesting = false;
                 hide();
+                Constant.startPay = false;
             }
         });
+
 //        findViewById(R.id.btn_sure_pay).setOnClickListener(this);
         setPriceData();
     }
@@ -228,12 +267,30 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
         orderRequesting = true;
         playMusic(2);
         Log.d(TAG, "orderRequest===: " + GsonUtil.GsonString(shangMiOrderRequest));
-        MyRetrofit.getApiService().createShangMi(shangMiOrderRequest).enqueue(new MyCallback<ShangMiOrderResponse>() {
+
+        final OrderDetail orderDetail = new OrderDetail();
+        orderDetail.setPrice(PriceUtil.changeF2Y(shangMiOrderRequest.getAccountBalance()));
+        orderDetail.setOrderType(shangMiOrderRequest.getPayType());
+
+        if (orderDetail.getOrderType().intValue() == 2) {//支付类型 0：二维码支付，1：人脸支付，2：实体卡支付，3：其他支付,  4:商户扫码支付
+            orderDetail.setOrderTypeStr("刷卡");
+        } else if (orderDetail.getOrderType().intValue() == 3) {
+            orderDetail.setOrderTypeStr("现金");
+        } else if (orderDetail.getOrderType().intValue() == 4) {
+            orderDetail.setOrderTypeStr("刷码");
+        }
+        orderDetail.setDateTime(simpleDateFormat.format(new Date()));
+        orderDetail.setShopId(shangMiOrderRequest.getShopID());
+        orderDetail.setCashierDeskId(shangMiOrderRequest.getCashierDeskID());
+
+        MyRetrofit.getApiService().createShangMi(shangMiOrderRequest).enqueue(new MyCallback<JsonsRootBean>() {
             @Override
-            public void onSuccess(ShangMiOrderResponse orderResponse) {
+            public void onSuccess(JsonsRootBean orderResponse) {
                 Log.d(TAG, "orderResponse===: " + GsonUtil.GsonString(orderResponse));
 
 
+                Constant.keyboardHandler.sendEmptyMessage(1);
+                Constant.startPay = false;
                 if (orderResponse.getCode() == 200) {
                     tv_small_change_title.setText("支付成功");
                     playMusic(1);
@@ -241,8 +298,60 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
                     tv_cancle.setText("确定");
                     tv_cancle.setVisibility(View.VISIBLE);
 
+                    orderDetail.setRealPrice(PriceUtil.changeF2Y(Long.valueOf(orderResponse.getData().getRealFee())));
+                    orderDetail.setDiscountPrice(PriceUtil.changeF2Y(
+                            Long.valueOf(
+                            orderResponse.getData().getTotalFee() -
+                            orderResponse.getData().getRealFee())));
+                    orderDetail.setOrderNo(orderResponse.getData().getOrderNo());
+                    orderDao.insertData(orderDetail);
+/*
                     if (payMode == 1) {//1现金支付
                         hide();
+                    }*/
+
+                    if (orderDetail.getOrderType().intValue() == 2) {//支付类型 0：二维码支付，1：人脸支付，2：实体卡支付，3：其他支付,  4:商户扫码支付
+
+                        Constant.payUser = orderResponse.getData().getCustomerName();
+                        Constant.payBanlance =
+                                PriceUtil.changeF2Y(Long.valueOf(orderResponse.getData().getPayCard().getAccountbalance()));
+                        superHandler.sendEmptyMessage(23);
+
+                        new Timer().schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                handler.sendEmptyMessage(18);
+                            }
+                        }, 2000);
+
+                        new Timer().schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                superHandler.sendEmptyMessage(22);
+                            }
+                        }, 4000);
+                    }else {
+                        superHandler.sendEmptyMessage(21);
+
+                        new Timer().schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                handler.sendEmptyMessage(18);
+                                superHandler.sendEmptyMessage(22);
+                            }
+                        }, 2000);
+                    }
+
+
+
+
+                    Constant.curOrderList = orderDao.queryOrderList();
+
+                    orderListAdapter.notifyDataSetChanged();
+
+                    if (shopConfigDao.query().getAutoPrint().intValue() == 1) {
+                        MoneyActivity moneyActivity = (MoneyActivity)context;
+                        moneyActivity.printOrder(orderDetail);
                     }
                 } else {
                     Log.d(TAG, "orderResponse.getCode()== != 200: " + orderResponse);
@@ -259,12 +368,14 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
             }
 
             @Override
-            public void onFailure(Call<ShangMiOrderResponse> call, Throwable t) {
+            public void onFailure(Call<JsonsRootBean> call, Throwable t) {
                 super.onFailure(call, t);
 
+                Log.d(TAG, "onFailure====: " + t.getMessage());
                 playMusic(3);
                 orderRequesting = false;
                 tv_cancle.setVisibility(View.VISIBLE);
+                Constant.startPay = false;
             }
         });
     }
@@ -273,9 +384,6 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
 
     void playMusic(int type) {
 
-        if (true) {
-            return;
-        }
         if (mediaPlayer == null) {
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {

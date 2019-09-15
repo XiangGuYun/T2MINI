@@ -247,12 +247,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 return;
             }
             // 3: Generate a order data
-            byte[] data = ESCUtil.generateMockData();
+//            byte[] data = ESCUtil.generateMockData();
             // 4: Using InnerPrinter print data
             BluetoothSocket socket = null;
             try {
                 socket = BluetoothUtil.getSocket(device);
-                BluetoothUtil.sendData(data, socket);
+//                BluetoothUtil.sendData(data, socket);
             } catch (IOException e) {
                 if (socket != null) {
                     try {

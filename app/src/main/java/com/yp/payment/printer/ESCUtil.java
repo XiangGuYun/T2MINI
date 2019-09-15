@@ -1,5 +1,8 @@
 package com.yp.payment.printer;
 
+import com.yp.payment.Constant;
+import com.yp.payment.model.OrderDetail;
+
 import java.io.UnsupportedEncodingException;
 
 public class ESCUtil {
@@ -292,41 +295,47 @@ public class ESCUtil {
 	}
 
 	// --------------------
-	public static byte[] generateMockData() {
+	public static byte[] generateMockData(OrderDetail orderDetail) {
 		try {
 			byte[] next2Line = ESCUtil.nextLine(2);
-			byte[] title = "这是门店名  **中心店".getBytes("gb2312");
+			byte[] title = Constant.shopName.getBytes("gb2312");
+//			byte[] title = "这是门店名  **中心店".getBytes("gb2312");
 
 			byte[] boldOn = ESCUtil.boldOn();
 			byte[] fontSize2Big = ESCUtil.fontSizeSetBig(3);
 			byte[] center = ESCUtil.alignCenter();
-			byte[] Focus = "网 507".getBytes("gb2312");
+
+			////支付类型 0：二维码支付，1：人脸支付，2：实体卡支付，3：其他支付,  4:商户扫码支付
+
+			byte[] Focus = "消费单".getBytes("gb2312");
 			byte[] boldOff = ESCUtil.boldOff();
 			byte[] fontSize2Small = ESCUtil.fontSizeSetSmall(3);
 
 			byte[] left = ESCUtil.alignLeft();
-			byte[] orderSerinum = "订单编号：1234".getBytes("gb2312");
+			byte[] orderSerinum = ("订单编号：" + orderDetail.getOrderNo()).getBytes("gb2312");
 			boldOn = ESCUtil.boldOn();
 			byte[] fontSize1Big = ESCUtil.fontSizeSetBig(2);
-			byte[] FocusOrderContent = "蛋炒饭-（单）".getBytes("gb2312");
+			byte[] FocusOrderContent = (orderDetail.getOrderTypeStr() + "支付").getBytes("gb2312");
 			boldOff = ESCUtil.boldOff();
 			byte[] fontSize1Small = ESCUtil.fontSizeSetSmall(2);
 
 			next2Line = ESCUtil.nextLine(2);
 
-			byte[] priceInfo = "应收:22元 优惠：2.5元 ".getBytes("gb2312");
+			byte[] priceInfo = ("应收:" + orderDetail.getPrice() + "元 优惠："
+					+ orderDetail.getDiscountPrice() + "元 ").getBytes("gb2312");
 			byte[] nextLine = ESCUtil.nextLine(1);
 
-			byte[] priceShouldPay = "实收:19.5元".getBytes("gb2312");
+			byte[] priceShouldPay = ("实收:" + orderDetail.getRealPrice() + "元").getBytes("gb2312");
 			nextLine = ESCUtil.nextLine(1);
 
-			byte[] takeTime = "取餐时间:2015-02-13 12:51:59".getBytes("gb2312");
+			byte[] takeTime = "".getBytes("gb2312");
+//			byte[] takeTime = "取餐时间:2015-02-13 12:51:59".getBytes("gb2312");
 			nextLine = ESCUtil.nextLine(1);
-			byte[] setOrderTime = "下单时间：2015-02-13 12:35:15".getBytes("gb2312");
+			byte[] setOrderTime = ("下单时间：" + orderDetail.getDateTime()).getBytes("gb2312");
 
-			byte[] tips_1 = "微信关注\"**\"自助下单每天免1元".getBytes("gb2312");
+			byte[] tips_1 = "请关注'云澎智能'小程序".getBytes("gb2312");
 			nextLine = ESCUtil.nextLine(1);
-			byte[] tips_2 = "饭后点评再奖5毛".getBytes("gb2312");
+			byte[] tips_2 = "".getBytes("gb2312");
 			byte[] next4Line = ESCUtil.nextLine(4);
 
 			byte[] breakPartial = ESCUtil.feedPaperCutPartial();

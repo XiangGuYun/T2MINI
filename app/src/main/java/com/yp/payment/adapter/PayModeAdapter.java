@@ -42,10 +42,11 @@ public class PayModeAdapter extends RecyclerView.Adapter<PayModeAdapter.ViewHold
         viewHolder.item_iv_pay_mode_icon.setImageResource(Consts.payModeIcons[i]);
         viewHolder.item_tv_pay_mode_name.setText(Consts.payModes[i]);
 
+        viewHolder.item_tv_pay_mode_name.setWidth(500);
         if (selectedMode == i) {
-            viewHolder.itemiv_pay_mode_bg_layout.setBackgroundResource(R.color.white);
-        } else {
             viewHolder.itemiv_pay_mode_bg_layout.setBackgroundResource(R.color.unselect_pay_mode);
+        } else {
+            viewHolder.itemiv_pay_mode_bg_layout.setBackgroundResource(R.color.white);
         }
         viewHolder.itemiv_pay_mode_bg_layout.setTag(i);
         viewHolder.itemiv_pay_mode_bg_layout.setOnClickListener(new View.OnClickListener() {

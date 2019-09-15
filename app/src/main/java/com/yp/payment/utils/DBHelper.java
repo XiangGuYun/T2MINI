@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     // 数据库文件名
-    public static final String DB_NAME = "shangmi.db";
+    public static final String DB_NAME = "shangmi5.db";
 
     // 数据库表名
     // 数据库版本号
@@ -28,10 +28,30 @@ public class DBHelper extends SQLiteOpenHelper {
         String sql3 = "create table shopConfig" +
                 "(id integer primary key autoincrement, " +
                 "shopId integer, " +
-                "cashierDeskId integer "
+                "cashierDeskId integer ," +
+                "shopName varchar ," +
+                "username varchar, " +
+                "autoLogin integer, " +
+                "autoPrint integer "
                 + ")";
 
         db.execSQL(sql3);
+
+        // 建表 商户配置表
+        String orderSql = "create table order_info" +
+                "(id integer primary key autoincrement, " +
+                "shopId integer, " +
+                "cashierDeskId integer, " +
+                "orderNo varchar, " +
+                "dateTime varchar, " +
+                "orderType integer, " +
+                "orderTypeStr varchar, " +
+                "price varchar ," +
+                "realPrice varchar ," +
+                "discountPrice varchar "
+                + ")";
+
+        db.execSQL(orderSql);
 
     }
 

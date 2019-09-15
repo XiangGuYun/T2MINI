@@ -54,6 +54,15 @@ public class LoginResponse {
     public static class DataBean {
         private Integer shopId;
         private Integer cashierDeskId;
+        private String shopName;
+
+        public String getShopName() {
+            return shopName;
+        }
+
+        public void setShopName(String shopName) {
+            this.shopName = shopName;
+        }
 
         public Integer getShopId() {
             return shopId;

@@ -40,7 +40,7 @@
         android:id="@+id/item_tv_pay_price"
         android:layout_width="74dp"
         android:layout_height="28dp"
-        android:text="￥36.00"
+        android:text=""
         android:textColor="#ff313133"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/item_tv_pay_date"

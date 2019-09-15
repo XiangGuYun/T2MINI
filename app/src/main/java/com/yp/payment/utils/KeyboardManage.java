@@ -1,6 +1,10 @@
 package com.yp.payment.utils;
 
 import android.content.Context;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -10,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.yp.payment.Constant;
 import com.yp.payment.R;
 import com.yp.payment.adapter.CashModeAdapter;
 import com.yp.payment.input.KeyBoardCallback;
@@ -33,13 +38,25 @@ public class KeyboardManage implements KeyBoardCallback, RecommendPriceCallback 
     SettlementCallback settlementCallback;
     RecyclerView cash_recycler_view;
 
+    Context context;
+    Handler handler;
     /**
      * 结算价钱推荐
      */
     CashModeAdapter cashModeAdapter;
 
-    public KeyboardManage(Context context, View rootView, SettlementCallback settlementCallback) {
+    Handler keyboardHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 1) {
+                tv_input_cash.setText("0");
+                return;
+            }
+        }
+    };
+    public KeyboardManage(Context context, View rootView, SettlementCallback settlementCallback, Handler handler) {
         this.settlementCallback = settlementCallback;
+        this.handler = handler;
         cashModeAdapter = new CashModeAdapter(context, this);
         rootView.findViewById(R.id.tv_over).setOnClickListener(onClickListener);
         tv_input_cash = rootView.findViewById(R.id.tv_input_cash);
@@ -48,6 +65,8 @@ public class KeyboardManage implements KeyBoardCallback, RecommendPriceCallback 
         cash_recycler_view.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         cash_recycler_view.setAdapter(cashModeAdapter);
         solveInputData();
+
+        Constant.keyboardHandler = keyboardHandler;
     }
 
     /**
@@ -60,6 +79,14 @@ public class KeyboardManage implements KeyBoardCallback, RecommendPriceCallback 
                 double price = Double.parseDouble(tv_input_cash.getText().toString());
 
                 Log.d(TAG, "price==" + price);
+
+                if (!((new Double(price) * 100) > 0)) {
+                    handler.sendEmptyMessage(19);
+                    return ;
+                }
+                Constant.curPrice = tv_input_cash.getText().toString();
+                handler.sendEmptyMessage(20);
+                Constant.startPay = true;
                 settlementCallback.onSettlementClick(price, 0);
             } catch (NumberFormatException e) {
                 e.printStackTrace();
@@ -73,7 +100,7 @@ public class KeyboardManage implements KeyBoardCallback, RecommendPriceCallback 
 
     public void solveInputData() {
         virtualKeyboardView.setKeyBoardCallback(this);
-        tv_input_cash.setShowSoftInputOnFocus(false);
+//        tv_input_cash.setShowSoftInputOnFocus(false);
         tv_input_cash.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -209,4 +236,5 @@ public class KeyboardManage implements KeyBoardCallback, RecommendPriceCallback 
             e.printStackTrace();
         }
     }
+
 }
