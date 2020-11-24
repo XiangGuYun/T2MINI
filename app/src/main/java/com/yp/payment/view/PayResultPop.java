@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yp.payment.Constant;
+import com.yp.payment.Consts;
 import com.yp.payment.R;
 import com.yp.payment.adapter.OrderListAdapter;
 import com.yp.payment.dao.OrderDao;
@@ -23,9 +24,14 @@ import com.yp.payment.internet.ShangMiOrderRequest;
 import com.yp.payment.internet.ShangMiOrderResponse;
 import com.yp.payment.internet.orderresp.JsonsRootBean;
 import com.yp.payment.model.OrderDetail;
+import com.yp.payment.order.layer.utils.BusUtils;
+import com.yp.payment.order.layer.utils.ToastUtils;
 import com.yp.payment.ui.MoneyActivity;
+import com.yp.payment.ui.OrderDishActivity;
 import com.yp.payment.utils.GsonUtil;
 import com.yp.payment.utils.PriceUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -119,6 +125,10 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
                 orderRequesting = false;
                 hide();
                 Constant.startPay = false;
+                Constant.keyboardHandler.sendEmptyMessage(1);
+                Message msg = Message.obtain();
+                msg.what = 0x123;
+                EventBus.getDefault().post(msg);
             }
         });
 
@@ -127,6 +137,8 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
     }
 
     public void showPop(int payMode, double price, double commPrice) {
+        Constant.startPay = true;
+
         this.payMode = payMode;
         this.price = price;
         this.commPrice = commPrice;
@@ -139,9 +151,15 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
             shangMiOrderRequest.setShopID(Constant.shopId);
             shangMiOrderRequest.setCashierDeskID(Constant.cashierDeskId);
 
-            BigDecimal priceInCent = new BigDecimal(price).multiply(new BigDecimal(100));
-            shangMiOrderRequest.setAccountBalance(priceInCent.longValue());
+            BigDecimal priceInCent = new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(100));
+            if(Constant.IS_ORDER_DISH){
+                shangMiOrderRequest.setAccountBalance(priceInCent.longValue()*(OrderDishActivity.selectedIndex+1));
+            } else {
+                shangMiOrderRequest.setAccountBalance(priceInCent.longValue());
+            }
             doPay(shangMiOrderRequest);
+        }else {
+            playMusic(5);
         }
     }
 
@@ -155,7 +173,7 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
         shangMiOrderRequest.setPayType(2);
         shangMiOrderRequest.setShopID(Constant.shopId);
         shangMiOrderRequest.setCashierDeskID(Constant.cashierDeskId);
-        BigDecimal priceInCent = new BigDecimal(price).multiply(new BigDecimal(100));
+        BigDecimal priceInCent = new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(100));
         shangMiOrderRequest.setAccountBalance(priceInCent.longValue());
         doPay(shangMiOrderRequest);
     }
@@ -170,7 +188,7 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
         shangMiOrderRequest.setPayType(4);
         shangMiOrderRequest.setShopID(Constant.shopId);
         shangMiOrderRequest.setCashierDeskID(Constant.cashierDeskId);
-        BigDecimal priceInCent = new BigDecimal(price).multiply(new BigDecimal(100));
+        BigDecimal priceInCent = new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(100));
         shangMiOrderRequest.setAccountBalance(priceInCent.longValue());
         doPay(shangMiOrderRequest);
     }
@@ -178,11 +196,16 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
     public void setPriceData() {
         if (tv_title == null) return;
         switch (payMode) {
+
             case 1:
                 tv_title.setText("现金支付");
                 tv_used_price_title.setText("应付：");
                 tv_small_change_title.setText("订单同步中……");
-                tv_used_price.setText(df.format(price));
+                if(Constant.IS_ORDER_DISH){
+                    tv_used_price.setText(df.format(price*(OrderDishActivity.selectedIndex+1)));
+                } else {
+                    tv_used_price.setText(df.format(price));
+                }
                 tv_balance_title.setVisibility(View.GONE);
                 tv_balance.setVisibility(View.GONE);
                 tv_small_change.setVisibility(View.GONE);
@@ -190,7 +213,11 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
             case 0:
                 tv_title.setText("线上支付");
                 tv_used_price_title.setText("应付：");
-                tv_used_price.setText(df.format(price));
+                if(Constant.IS_ORDER_DISH){
+                    tv_used_price.setText(df.format(price*(OrderDishActivity.selectedIndex+1)));
+                } else {
+                    tv_used_price.setText(df.format(price));
+                }
                 tv_small_change_title.setText("正等待客户刷卡或扫码……");
 
                 tv_balance_title.setVisibility(View.GONE);
@@ -230,17 +257,21 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
                 tv_balance.setVisibility(View.VISIBLE);
                 tv_small_change.setVisibility(View.VISIBLE);
                 break;*/
+            default:
         }
     }
 
     @Override
     public void show() {
         super.show();
+        BusUtils.sendMsg(123);
     }
 
     @Override
     public void hide() {
         super.hide();
+        Constant.startPay = false;
+        BusUtils.sendMsg(124);
     }
 
     @Override
@@ -266,7 +297,6 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
         }
         orderRequesting = true;
         playMusic(2);
-        Log.d(TAG, "orderRequest===: " + GsonUtil.GsonString(shangMiOrderRequest));
 
         final OrderDetail orderDetail = new OrderDetail();
         orderDetail.setPrice(PriceUtil.changeF2Y(shangMiOrderRequest.getAccountBalance()));
@@ -282,6 +312,7 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
         orderDetail.setDateTime(simpleDateFormat.format(new Date()));
         orderDetail.setShopId(shangMiOrderRequest.getShopID());
         orderDetail.setCashierDeskId(shangMiOrderRequest.getCashierDeskID());
+        Log.d(TAG, "orderRequest===: " + GsonUtil.GsonString(shangMiOrderRequest));
 
         MyRetrofit.getApiService().createShangMi(shangMiOrderRequest).enqueue(new MyCallback<JsonsRootBean>() {
             @Override
@@ -289,13 +320,15 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
                 Log.d(TAG, "orderResponse===: " + GsonUtil.GsonString(orderResponse));
 
 
-                Constant.keyboardHandler.sendEmptyMessage(1);
-                Constant.startPay = false;
+
+
                 if (orderResponse.getCode() == 200) {
+                    Constant.keyboardHandler.sendEmptyMessage(1);
+                    Constant.startPay = false;
                     tv_small_change_title.setText("支付成功");
                     playMusic(1);
 
-                    tv_cancle.setText("确定");
+                    tv_cancle.setText("取消");
                     tv_cancle.setVisibility(View.VISIBLE);
 
                     orderDetail.setRealPrice(PriceUtil.changeF2Y(Long.valueOf(orderResponse.getData().getRealFee())));
@@ -304,7 +337,9 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
                             orderResponse.getData().getTotalFee() -
                             orderResponse.getData().getRealFee())));
                     orderDetail.setOrderNo(orderResponse.getData().getOrderNo());
-                    orderDao.insertData(orderDetail);
+                    if(!Constant.IS_ORDER_DISH){
+                        orderDao.insertData(orderDetail);
+                    }
 /*
                     if (payMode == 1) {//1现金支付
                         hide();
@@ -312,17 +347,27 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
 
                     if (orderDetail.getOrderType().intValue() == 2) {//支付类型 0：二维码支付，1：人脸支付，2：实体卡支付，3：其他支付,  4:商户扫码支付
 
-                        Constant.payUser = orderResponse.getData().getCustomerName();
-                        Constant.payBanlance =
-                                PriceUtil.changeF2Y(Long.valueOf(orderResponse.getData().getPayCard().getAccountbalance()));
-                        superHandler.sendEmptyMessage(23);
+                        if (orderResponse.getData().getPayCard() != null) {
+                            Constant.payUser = orderResponse.getData().getCustomerName();
+                            Constant.payBanlance =
+                                    PriceUtil.changeF2Y(Long.valueOf(orderResponse.getData().getPayCard().getAccountbalance()));
+                            superHandler.sendEmptyMessage(23);
+                        }
 
-                        new Timer().schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                handler.sendEmptyMessage(18);
-                            }
-                        }, 2000);
+                        if (!Constant.staticPay) {
+                            new Timer().schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    handler.sendEmptyMessage(18);
+                                }
+                            }, 2000);
+                        }else {
+                            Constant.startPay = true;
+                            tv_small_change_title.setText("正等待客户刷卡或扫码……");
+
+                            tv_cancle.setText("取消");
+                            tv_cancle.setVisibility(View.VISIBLE);
+                        }
 
                         new Timer().schedule(new TimerTask() {
                             @Override
@@ -333,10 +378,24 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
                     }else {
                         superHandler.sendEmptyMessage(21);
 
+                        if (!Constant.staticPay) {
+                            new Timer().schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    handler.sendEmptyMessage(18);
+                                }
+                            }, 2000);
+                        }else {
+                            Constant.startPay = true;
+                            tv_small_change_title.setText("正等待客户刷卡或扫码……");
+
+                            tv_cancle.setText("取消");
+                            tv_cancle.setVisibility(View.VISIBLE);
+                        }
+
                         new Timer().schedule(new TimerTask() {
                             @Override
                             public void run() {
-                                handler.sendEmptyMessage(18);
                                 superHandler.sendEmptyMessage(22);
                             }
                         }, 2000);
@@ -344,14 +403,20 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
 
 
 
-
-                    Constant.curOrderList = orderDao.queryOrderList();
+                    if(!Constant.IS_ORDER_DISH){
+                        Constant.curOrderList = orderDao.queryOrderList();
+                    }
 
                     orderListAdapter.notifyDataSetChanged();
 
                     if (shopConfigDao.query().getAutoPrint().intValue() == 1) {
-                        MoneyActivity moneyActivity = (MoneyActivity)context;
-                        moneyActivity.printOrder(orderDetail);
+                        if(!Constant.IS_ORDER_DISH){
+                            MoneyActivity moneyActivity = (MoneyActivity)context;
+                            moneyActivity.printOrder(orderDetail);
+                        } else {
+                            OrderDishActivity orderDishActivity = (OrderDishActivity)context;
+                            orderDishActivity.printOrder(orderDetail);
+                        }
                     }
                 } else {
                     Log.d(TAG, "orderResponse.getCode()== != 200: " + orderResponse);
@@ -419,6 +484,13 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
         } else if (type == 3) {//  -
             try {
                 mediaPlayer.setDataSource(context, Uri.parse("android.resource://" + packageName + "/" + R.raw.networkerror));
+                mediaPlayer.prepareAsync();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (type == 5) {//  -
+            try {
+                mediaPlayer.setDataSource(context, Uri.parse("android.resource://" + packageName + "/" + R.raw.pleasepay));
                 mediaPlayer.prepareAsync();
             } catch (Exception e) {
                 e.printStackTrace();

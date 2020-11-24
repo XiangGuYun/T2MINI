@@ -7,7 +7,8 @@ import com.yp.payment.model.OrderDetail;
 import java.util.List;
 
 public class Constant {
-
+    public static boolean IS_ORDER_DISH = false;
+    public static boolean staticPay = false;
     public static boolean startPay = false;
     public static boolean updating = false;
     public static Integer curOrderSeq = 0;

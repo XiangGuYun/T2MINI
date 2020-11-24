@@ -17,6 +17,9 @@ public interface Api {
     @POST("zjypg/shangmiInit")
     Call<LoginResponse> init(@Body LoginRequest entity);
 
+    @POST("zjypg/shangmiInitV2")
+    Call<LoginResponseV2> initV2(@Body LoginRequest entity);
+
 
     @POST("/api/order/createShangMi")
     Call<JsonsRootBean> createShangMi(@Body ShangMiOrderRequest entity);

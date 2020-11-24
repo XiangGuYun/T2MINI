@@ -19,6 +19,8 @@ public class ShangMiOrderRequest {
         return cardNo;
     }
 
+    public int isOffline;
+
     public void setCardNo(String cardNo) {
         this.cardNo = cardNo;
     }

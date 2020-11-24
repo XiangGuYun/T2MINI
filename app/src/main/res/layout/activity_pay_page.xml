@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".ui.MoneyActivity"
     android:background="#ddd">
 
     <TextView
@@ -16,6 +19,18 @@
         android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="#ff46515e"
+        android:textSize="16sp"
+        android:layout_marginLeft="5dp"
+        android:tooltipText="V1.0.0"
+        app:layout_constraintLeft_toRightOf="@+id/tv_shop_name"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_shop_name" />
 
     <TextView
         android:id="@+id/tv_shop_num"
@@ -86,7 +101,7 @@
         android:layout_height="60dp"
         android:background="@drawable/shape_refund"
         android:gravity="center"
-        android:text="退款"
+        android:text="订单统计"
         android:textColor="#ffe1584e"
         android:textSize="24sp"
         app:layout_constraintRight_toRightOf="@+id/order_recyclerview"
@@ -105,8 +120,12 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:background="@color/white"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toRightOf="@+id/view_centre"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_editor_absoluteY="1dp" />
+
+
 
     <TextView
         android:id="@+id/btn_vip_login"
@@ -127,20 +146,23 @@
         android:layout_height="28dp"
         android:layout_marginLeft="20dp"
         android:minWidth="270dp"
-        android:text="会员号："
+        android:text="商户："
         android:textColor="#ff999999"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_vip_login"
         app:layout_constraintLeft_toRightOf="@+id/view_centre"
-        app:layout_constraintTop_toTopOf="@+id/btn_vip_login" />
+        app:layout_constraintTop_toTopOf="@+id/btn_vip_login"
+        app:layout_constraintVertical_bias="0.428" />
 
     <TextView
         android:id="@+id/tv_vip_phone"
-        android:layout_width="80dp"
-        android:layout_height="28dp"
+        android:layout_width="130dp"
+        android:layout_height="42dp"
         android:text=""
-        android:textColor="#ff999999"
-        android:textSize="20sp"
+        android:background="@drawable/shape_vip_login"
+        android:layout_marginRight="300dp"
+        android:textColor="#ffffffff"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_vip_login"
         app:layout_constraintLeft_toRightOf="@+id/tv_vip_num"
         app:layout_constraintTop_toTopOf="@+id/btn_vip_login" />
@@ -231,5 +253,6 @@
             android:id="@+id/finder_view"
             android:layout_width="1dp"
             android:layout_height="1dp" />
+
     </FrameLayout>
 </android.support.constraint.ConstraintLayout>

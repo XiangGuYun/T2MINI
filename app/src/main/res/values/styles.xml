@@ -9,5 +9,19 @@
         <item name="windowNoTitle">true</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
+    <style name="list_dialog_theme" parent="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen">
+        <item name="android:windowFullscreen">true</item>
+        <!-- 模糊 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- 无标题 -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- 背景透明 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- 半透明 -->
+        <item name="android:windowIsTranslucent">false</item>
+        <!--显示软件盘-->
+        <item name="android:windowSoftInputMode">stateAlwaysHidden</item>
+    </style>
 </resources>

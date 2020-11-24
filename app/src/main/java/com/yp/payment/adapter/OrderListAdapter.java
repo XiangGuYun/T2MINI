@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yp.payment.Constant;
@@ -56,7 +57,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
             viewHolder.item_order_list_bg.setBackgroundColor(mContext.getResources().getColor(R.color.unselect_pay_mode));
         }
 
-        viewHolder.item_tv_pay_price.setText("￥" + orderDetail.getPrice());
+        viewHolder.item_tv_pay_realprice.setText("实收: ￥" + orderDetail.getRealPrice());
+        viewHolder.item_tv_pay_price.setText("应收: ￥" + orderDetail.getPrice());
 
         if (selectedMode == i) {
             viewHolder.item_order_list_bg.setBackgroundResource(R.color.unselect_pay_mode);
@@ -85,9 +87,10 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        ConstraintLayout item_order_list_bg;
+        LinearLayout item_order_list_bg;
         TextView item_tv_pay_date;
         TextView item_tv_mpde_tag;
+        TextView item_tv_pay_realprice;
         TextView item_tv_pay_price;
 
         public ViewHolder(@NonNull View itemView) {
@@ -95,6 +98,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
             item_order_list_bg = itemView.findViewById(R.id.item_order_list_bg);
             item_tv_pay_date = itemView.findViewById(R.id.item_tv_pay_date);
             item_tv_mpde_tag = itemView.findViewById(R.id.item_tv_mpde_tag);
+            item_tv_pay_realprice = itemView.findViewById(R.id.item_tv_pay_realprice);
             item_tv_pay_price = itemView.findViewById(R.id.item_tv_pay_price);
         }
     }

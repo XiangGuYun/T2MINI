@@ -8,18 +8,26 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
+import com.yp.baselib.helper.NetListenHelper;
+import com.yp.baselib.utils.NetUtils;
 import com.yp.payment.Constant;
+import com.yp.payment.Consts;
 import com.yp.payment.R;
 import com.yp.payment.dao.ShopConfigDao;
 import com.yp.payment.http.MyCallback;
 import com.yp.payment.internet.LoginRequest;
 import com.yp.payment.internet.LoginResponse;
+import com.yp.payment.internet.LoginResponseV2;
 import com.yp.payment.internet.MyRetrofit;
 import com.yp.payment.model.ShopConfig;
 import com.yp.payment.utils.GsonUtil;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+import kotlin.jvm.functions.Function1;
 import retrofit2.Call;
 
 /**
@@ -41,6 +49,8 @@ public class LoginActivity extends BaseActivity {
     public static String deviceId;
 
     public ShopConfigDao shopConfigDao;
+    private NetListenHelper netHelper;
+
     @Override
     public int layoutId() {
         return R.layout.activity_login;
@@ -50,18 +60,27 @@ public class LoginActivity extends BaseActivity {
     public void initView() {
         edit_user_account = findViewById(R.id.edit_user_account);
         edit_user_psw = findViewById(R.id.edit_user_psw);
-        findViewById(R.id.btn_login_user).setOnClickListener(onClickListener);
+        findViewById(R.id.btn_login_user).setOnClickListener(v->loginAdmin());
+
+        netHelper = new NetListenHelper();
+        netHelper.register(this,
+                integer -> {
+                    edit_user_account.setVisibility(View.VISIBLE);
+                    edit_user_psw.setVisibility(View.VISIBLE);
+                    return null;
+                },
+                () -> {
+                    edit_user_account.setVisibility(View.INVISIBLE);
+                    edit_user_psw.setVisibility(View.INVISIBLE);
+                    ((Button)findViewById(R.id.btn_login_user)).setText("离线登录");
+                    return null;
+                }
+                );
+
         checkBluetoothPermission();
 
         deviceId = android.os.Build.SERIAL;
     }
-
-    View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            loginAdmin();
-        }
-    };
 
     void loginAdmin() {
         String user_account = edit_user_account.getText().toString().trim();
@@ -83,7 +102,7 @@ public class LoginActivity extends BaseActivity {
 
         Log.d(TAG, "loginRequest==" + GsonUtil.GsonString(loginRequest));
 
-        MyRetrofit.getApiService().init(loginRequest).enqueue(new MyCallback<LoginResponse>() {
+        /*MyRetrofit.getApiService().init(loginRequest).enqueue(new MyCallback<LoginResponse>() {
 
             @Override
             public void onSuccess(LoginResponse loginResponse) {
@@ -95,6 +114,9 @@ public class LoginActivity extends BaseActivity {
                     Constant.curUsername = loginRequest.getUsername();
                     Constant.shopName = loginResponse.getData().getShopName();
 
+                    if (Constant.shopId == ) {
+                    }
+
                     shopConfigDao.insertData(Constant.shopId, Constant.cashierDeskId,
                             Constant.shopName, loginRequest.getUsername());
                     openActivity(MoneyActivity.class);
@@ -104,6 +126,40 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
 
+                Log.d(TAG, "loginResponse onFailure==" + t.getMessage());
+                super.onFailure(call, t);
+            }
+        });*/
+
+        MyRetrofit.getApiService().initV2(loginRequest).enqueue(new MyCallback<LoginResponseV2>() {
+
+            @Override
+            public void onSuccess(LoginResponseV2 loginResponse) {
+                Log.d(TAG, "loginResponse==" + loginResponse);
+
+                if (loginResponse.getCode() == 200) {
+                    Constant.shopId = loginResponse.getData().getShopId();
+                    Constant.cashierDeskId = loginResponse.getData().getCashierDeskId();
+                    Constant.curUsername = loginRequest.getUsername();
+                    Constant.shopName = loginResponse.getData().getShopName();
+
+                    if (loginResponse.getData().getCashAllow() != null &&
+                            loginResponse.getData().getCashAllow().intValue() == 1) {
+                        Consts.payModes = Consts.payModesWithCash;
+                        Consts.payModeIcons = Consts.payModeIconsWithCash;
+                    }else {
+                        Consts.payModes = Consts.payModesWithNoCash;
+                        Consts.payModeIcons = Consts.payModeIconsWithNoCash;
+                    }
+
+                    shopConfigDao.insertData(Constant.shopId, Constant.cashierDeskId,
+                            Constant.shopName, loginRequest.getUsername());
+                    openActivity(MoneyActivity.class);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponseV2> call, Throwable t) {
                 Log.d(TAG, "loginResponse onFailure==" + t.getMessage());
 //                showToast("网络异常");
                 super.onFailure(call, t);
@@ -121,11 +177,13 @@ public class LoginActivity extends BaseActivity {
 
         ShopConfig shopConfig = shopConfigDao.query();
 
-        if (shopConfig != null && shopConfig.getAutoLogin().intValue() == 1) {
+        if (shopConfig != null && shopConfig.getAutoLogin() == 1 && NetUtils.INSTANCE.isNetConnected(this)) {
             Constant.shopId = shopConfig.getShopId();
             Constant.cashierDeskId = shopConfig.getCashierDeskId();
             Constant.curUsername = shopConfig.getUsername();
             Constant.shopName = shopConfig.getShopName();
+            Consts.payModes = Consts.payModesWithNoCash;
+            Consts.payModeIcons = Consts.payModeIconsWithNoCash;
             openActivity(MoneyActivity.class);
         }
     }
@@ -156,4 +214,9 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        netHelper.unregister(this);
+    }
 }
