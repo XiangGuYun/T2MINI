@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="66dp"
+        android:orientation="horizontal"
+        android:id="@+id/item_order_list_bg"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        >
+        <TextView
+            android:id="@+id/item_tv_pay_date"
+            android:layout_width="158dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="2019-08-18 13:40"
+            android:textColor="#ff686e75"
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_weight="1"
+            />
+
+
+        <TextView
+            android:id="@+id/item_tv_mpde_tag"
+            android:layout_width="56dp"
+            android:layout_height="24dp"
+            android:background="@drawable/item_list_cash"
+            android:gravity="center"
+            android:text="现金"
+            android:layout_gravity="center"
+            android:textColor="#fff99100"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/item_tv_pay_date"
+            app:layout_constraintLeft_toRightOf="@+id/item_tv_pay_date"
+            app:layout_constraintTop_toTopOf="@+id/item_tv_pay_date"
+
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="right"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:id="@+id/item_tv_pay_realprice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="realprice"
+                android:textColor="#ff313133"
+                android:textSize="20sp"
+                android:layout_gravity="center|right"
+                android:gravity="center|right"
+                android:layout_weight="1"
+                />
+            <TextView
+                android:id="@+id/item_tv_pay_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="price"
+                android:textColor="@color/color_666"
+                android:textSize="15sp"
+                android:layout_gravity="center|right"
+                android:gravity="center|right"
+                android:layout_weight="1"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ccc"
+        />
+</LinearLayout>

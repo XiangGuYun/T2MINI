@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+
+    <color name="finder_mask">#60000000</color>
+    <color name="rea">#ffff0000</color>
+    <color name="possible_result_points">#c0ffff00</color>
+    <color name="white">#fff</color>
+    <color name="select_cash">#ff3498db</color>
+    <color name="unselect_pay_mode">#ddd</color>
+    <color name="color_333">#333</color>
+    <color name="color_666">#666</color>
+    <color name="color_999">#999</color>
+    <color name="color_cash">#F99100</color>
+
+    <color name="color_ali">#00AAEE</color>
+    <color name="color_wechat">#44B549</color>
+    <color name="pop_select_text">#E1584E</color>
+    <color name="pop_select_bg">#FFF5F6</color>
+    <color name="small_change">#E3675E</color>
+    <color name="press_change">#FF8C69</color>
+
+    <color name="transparent">#00000000</color>
+
+    <color name="black">#000000</color>
+    <color name="round">@color/color_wechat</color>
+    <color name="load_success">@color/color_wechat</color>
+    <color name="red">#FF0000</color>
+    <color name="text_item_content">#9B9B9B</color>
+    <!-- activity灰色背景 -->
+    <color name="bg_activity_gray">#f4f4f4</color>
+
+    <color name="color_Accent">#70000000</color>
+    <!--外面圈背景颜色-->
+    <color name="circleBg">#DFE7EB</color>
+    <!--外面圈背景颜色-->
+    <color name="viewBgWhite">#FFFFFFFF</color>
+    <color name="main_color_press">#17abe3</color>
+    <!-- 主题颜色 -->
+    <color name="main_color">@color/ligth_bule</color>
+    <!-- 淡蓝 -->
+    <color name="ligth_bule">#1E90FF</color>
+    <color name="black_d">@color/color_666</color>
+    <color name="money_color">#FB6F08</color>
+    <color name="stroke">#e5e5e5</color>
+    <color name="green_deep">#548B54</color>
+    <color name="text_gray">#707070</color>
+</resources>

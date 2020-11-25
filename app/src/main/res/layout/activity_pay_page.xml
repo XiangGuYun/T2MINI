@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ddd"
+    tools:context=".ui.MoneyActivity">
+
+    <TextView
+        android:id="@+id/tv_shop_name"
+        android:layout_width="144dp"
+        android:layout_height="33dp"
+        android:layout_margin="20dp"
+        android:text=""
+        android:textColor="#ff46515e"
+        android:textSize="24sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:text=""
+        android:textColor="#ff46515e"
+        android:textSize="16sp"
+        android:tooltipText="V1.0.0"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_shop_name"
+        app:layout_constraintLeft_toRightOf="@+id/tv_shop_name" />
+
+    <TextView
+        android:id="@+id/tv_shop_num"
+        android:layout_width="116dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="10dp"
+        android:text=""
+        android:textColor="#ff46515e"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_shop_name"
+        app:layout_constraintTop_toBottomOf="@+id/tv_shop_name" />
+
+    <ImageView
+        android:id="@+id/iv_exit"
+        android:layout_width="106dp"
+        android:layout_height="44dp"
+        android:layout_marginLeft="326dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/shape_exit"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/icon_quit"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_exit"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_exit"
+        app:layout_constraintTop_toTopOf="@+id/iv_exit" />
+
+    <TextView
+        android:layout_width="32dp"
+        android:layout_height="22dp"
+        android:layout_marginRight="19dp"
+        android:text="退出"
+        android:textColor="#ff46515e"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_exit"
+        app:layout_constraintRight_toRightOf="@+id/iv_exit"
+        app:layout_constraintTop_toTopOf="@+id/iv_exit" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/order_recyclerview"
+        android:layout_width="412dp"
+        android:layout_height="556dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/white"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_shop_num"
+        app:layout_constraintTop_toBottomOf="@+id/tv_shop_num" />
+
+    <TextView
+        android:id="@+id/btn_print"
+        android:layout_width="230dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/shape_print"
+        android:gravity="center"
+        android:text="打印订单"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintLeft_toLeftOf="@+id/order_recyclerview"
+        app:layout_constraintTop_toBottomOf="@+id/order_recyclerview" />
+
+    <TextView
+        android:id="@+id/refund"
+        android:layout_width="172dp"
+        android:layout_height="60dp"
+        android:background="@drawable/shape_refund"
+        android:gravity="center"
+        android:text="订单统计"
+        android:textColor="#ffe1584e"
+        android:textSize="24sp"
+        app:layout_constraintRight_toRightOf="@+id/order_recyclerview"
+        app:layout_constraintTop_toTopOf="@+id/btn_print" />
+
+    <View
+        android:id="@+id/view_centre"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="452dp"
+        android:background="#E1E1E3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toRightOf="@+id/view_centre"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_editor_absoluteY="1dp" />
+
+
+    <TextView
+        android:id="@+id/btn_vip_login"
+        android:layout_width="130dp"
+        android:layout_height="42dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/shape_vip_login"
+        android:gravity="center"
+        android:text=""
+        android:textColor="#ffffffff"
+        android:textSize="18sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_vip_num"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:layout_marginLeft="20dp"
+        android:minWidth="270dp"
+        android:text="商户："
+        android:textColor="#ff999999"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_vip_login"
+        app:layout_constraintLeft_toRightOf="@+id/view_centre"
+        app:layout_constraintTop_toTopOf="@+id/btn_vip_login"
+        app:layout_constraintVertical_bias="0.428" />
+
+    <TextView
+        android:id="@+id/tv_vip_phone"
+        android:layout_width="130dp"
+        android:layout_height="42dp"
+        android:layout_marginRight="300dp"
+        android:background="@drawable/shape_vip_login"
+        android:text=""
+        android:textColor="#ffffffff"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_vip_login"
+        app:layout_constraintLeft_toRightOf="@+id/tv_vip_num"
+        app:layout_constraintTop_toTopOf="@+id/btn_vip_login" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/pay_recycler_view"
+        android:layout_width="874dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="21dp"
+        android:background="@color/white"
+        android:overScrollMode="never"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_vip_num"
+        app:layout_constraintTop_toBottomOf="@+id/tv_vip_num" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cash_recycler_view"
+        android:layout_width="874dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@color/white"
+        android:minHeight="64dp"
+        android:overScrollMode="never"
+        app:layout_constraintLeft_toLeftOf="@+id/pay_recycler_view"
+        app:layout_constraintTop_toBottomOf="@+id/pay_recycler_view" />
+
+    <EditText
+        android:id="@+id/tv_input_cash"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="52dp"
+        android:background="@drawable/shape_intpu_cash"
+        android:gravity="center"
+        android:inputType="numberDecimal"
+        android:text="0"
+
+        android:textColor="#ff333333"
+        android:textCursorDrawable="@color/transparent"
+        android:textSize="34sp"
+        app:layout_constraintLeft_toLeftOf="@+id/cash_recycler_view"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cash_recycler_view" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#ddd"
+        app:layout_constraintBottom_toBottomOf="@+id/virtualKeyboardView"
+        app:layout_constraintLeft_toLeftOf="@+id/virtualKeyboardView"
+        app:layout_constraintRight_toRightOf="@+id/tv_input_cash"
+        app:layout_constraintTop_toTopOf="@+id/virtualKeyboardView" />
+
+    <com.yp.payment.view.VirtualKeyboardView
+        android:id="@+id/virtualKeyboardView"
+        android:layout_width="640dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:padding="10dp"
+        app:layout_constraintLeft_toLeftOf="@+id/cash_recycler_view"
+        app:layout_constraintTop_toBottomOf="@+id/tv_input_cash" />
+
+    <TextView
+        android:id="@+id/tv_over"
+        android:layout_width="190dp"
+        android:layout_height="366dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:background="#E1584E"
+        android:gravity="center"
+        android:text="结账"
+        android:textColor="#ffffffff"
+        android:textSize="32sp"
+        app:layout_constraintLeft_toRightOf="@+id/virtualKeyboardView"
+        app:layout_constraintTop_toTopOf="@+id/virtualKeyboardView" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <SurfaceView
+            android:id="@+id/surface_view"
+            android:layout_width="1dp"
+            android:layout_height="1dp" />
+
+        <com.yp.payment.scanner.FinderView
+            android:id="@+id/finder_view"
+            android:layout_width="1dp"
+            android:layout_height="1dp" />
+
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
