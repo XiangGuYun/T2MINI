@@ -1,2 +1,3 @@
 include ':baselib'
+include ':objectbox'
 include ':app'
