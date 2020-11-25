@@ -1,0 +1,104 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "30.0.1"
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-script-runtime:$kotlin_version"
+    // kotlin反射注解支持
+    api 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.6'
+
+    api 'androidx.appcompat:appcompat:1.2.0'
+
+    // 事件传递
+    api 'org.greenrobot:eventbus:3.1.1'
+
+    // 网络图片
+    api 'com.github.bumptech.glide:glide:4.9.0'
+
+    // 网络请求
+    api 'com.squareup.okhttp3:okhttp:4.9.0'
+
+    // 解决方法数量的限制问题
+    api 'com.android.support:multidex:1.0.3'
+
+    // 材质设计库
+    api 'com.google.android.material:material:1.2.1'
+
+    // JSON解析
+    api 'com.google.code.gson:gson:2.8.5'
+
+    // 6.0权限
+    api 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar'
+    api 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
+
+    // 状态栏
+    api 'com.githang:status-bar-compat:0.7'
+    //api 'com.jaeger.statusbarutil:library:1.5.1'
+
+    // 流式布局
+    api 'com.google.android:flexbox:1.0.0'
+
+    // Fragment管理库
+    api 'me.yokeyword:fragmentationx:1.0.2'
+
+    // 轮播图
+//    implementation 'com.youth.banner:banner:2.1.0'
+
+    // 自动轮播的ViewPager
+//    api ('cn.trinea.android.view.autoscrollviewpager:android-auto-scroll-view-pager:1.1.2') {
+//        exclude module: 'support-v4'
+//    }
+
+
+        // 图片压缩
+//    api 'id.zelory:compressor:2.1.0'
+
+    //图片裁剪
+//    api 'com.yalantis:ucrop:1.5.0'
+
+    // 下拉刷新，上拉加载
+//    api 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.5.1'
+//    api 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.5.1'//没有使用特殊Header，可以不加这行
+
+    // 选择器
+//    api 'com.contrarywind:Android-PickerView:4.1.7'
+
+    // viewPager转场效果
+//    api 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:2.0.24'
+
+    // 圆形图片
+//    api 'de.hdodenhof:circleimageview:3.0.0'
+
+    // RV动画库
+//    api 'jp.wasabeef:recyclerview-animators:2.3.0'
+
+    // 视频播放器
+//    api 'com.devbrackets.android:exomedia:4.3.0'
+
+}
