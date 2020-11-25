@@ -5,8 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.usr.objectbox.objectbox.ObjectBox;
-import com.usr.objectbox.objectbox.OrderDetail;
+import com.yp.payment.update.OrderDetail;
 import com.yp.payment.update.SPHelper;
 import com.yp.payment.utils.DBHelper;
 

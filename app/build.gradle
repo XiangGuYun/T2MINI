@@ -39,7 +39,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation project(path: ':objectbox')
     implementation project(path: ':baselib')
     testImplementation 'junit:junit:4.12'
     implementation files('libs/sunmiscan.jar')

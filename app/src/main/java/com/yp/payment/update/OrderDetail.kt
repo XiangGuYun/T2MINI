@@ -1,11 +1,7 @@
-package com.usr.objectbox.objectbox
+package com.yp.payment.update
 
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
 
-@Entity
 class OrderDetail{
-    @Id
     var id: Long = 0
     var shopId: Int? = null
     var cashierDeskId: Int? = null

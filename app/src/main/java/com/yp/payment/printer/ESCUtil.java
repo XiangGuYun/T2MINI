@@ -1,6 +1,6 @@
 package com.yp.payment.printer;
 
-import com.usr.objectbox.objectbox.OrderDetail;
+import com.yp.payment.update.OrderDetail;
 import com.yp.payment.update.SPHelper;
 
 import java.io.UnsupportedEncodingException;

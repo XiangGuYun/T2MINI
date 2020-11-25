@@ -5,13 +5,9 @@ import android.app.ProgressDialog
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import com.usr.objectbox.objectbox.ObjectBox
-import com.usr.objectbox.objectbox.ShopConfig
 import com.yp.baselib.annotation.LayoutId
 import com.yp.baselib.base.BaseActivity
 import com.yp.baselib.helper.NetListenHelper
-import com.yp.baselib.utils.DialogUtils
-import com.yp.baselib.utils.LogUtils
 import com.yp.baselib.utils.NetUtils.isNetConnected
 import com.yp.baselib.utils.PermissionUtils
 import com.yp.payment.Constant
@@ -22,9 +18,7 @@ import com.yp.payment.http.MyCallback
 import com.yp.payment.internet.LoginRequest
 import com.yp.payment.internet.LoginResponseV2
 import com.yp.payment.internet.MyRetrofit
-import com.yp.payment.update.Req
 import com.yp.payment.update.SPHelper
-import com.yp.payment.update.URL
 import com.yp.payment.utils.GsonUtil
 import kotlinx.android.synthetic.main.activity_login.*
 import retrofit2.Call

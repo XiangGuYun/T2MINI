@@ -2,7 +2,7 @@ package com.yp.payment;
 
 import android.os.Handler;
 
-import com.usr.objectbox.objectbox.OrderDetail;
+import com.yp.payment.update.OrderDetail;
 
 import java.util.List;
 

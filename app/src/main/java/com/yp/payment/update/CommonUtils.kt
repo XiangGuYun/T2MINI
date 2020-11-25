@@ -1,7 +1,5 @@
 package com.yp.payment.update
 
-import com.usr.objectbox.objectbox.ObjectBox
-import com.usr.objectbox.objectbox.OrderDetail
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,8 +26,8 @@ object CommonUtils {
         orderDetail.dateTime = simpleDateFormat.format(date)
         orderDetail.cardNo = cardNo
         orderDetail.isPayByOffline = isOffline
-        val orderDetailBox = ObjectBox.boxStore.boxFor(OrderDetail::class.java)
-        orderDetailBox.put(orderDetail)
+//        val orderDetailBox = ObjectBox.boxStore.boxFor(OrderDetail::class.java)
+//        orderDetailBox.put(orderDetail)
     }
 
 

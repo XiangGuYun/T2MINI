@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.usr.objectbox.objectbox.OrderDetail;
+import com.yp.payment.update.OrderDetail;
 import com.yp.payment.Constant;
 import com.yp.payment.R;
 
