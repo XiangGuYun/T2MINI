@@ -16,7 +16,8 @@ public class Constant {
     public static Integer cashierDeskId = null;
     public static String curUsername = null;
     public static String curPrice = null;
-    public static String shopName = "xxx";
+    public static String shopName = "";
+    public static int branchId = 0;
     public static String payUser = "";
     public static String payBanlance = "";
     public static Handler keyboardHandler = null;

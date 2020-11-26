@@ -40,15 +40,15 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
 
         viewHolder.item_tv_pay_date.setText(orderDetail.getDateTime());
 
-        if (orderDetail.getOrderType().intValue() == 2) {//支付类型 0：二维码支付，1：人脸支付，2：实体卡支付，3：其他支付,  4:商户扫码支付
+        if (orderDetail.getOrderType() == 2) {//支付类型 0：二维码支付，1：人脸支付，2：实体卡支付，3：其他支付,  4:商户扫码支付
             viewHolder.item_tv_mpde_tag.setBackgroundResource(R.drawable.item_list_wecha);
             viewHolder.item_tv_mpde_tag.setTextColor(mContext.getResources().getColor(R.color.color_wechat));
             viewHolder.item_tv_mpde_tag.setText("刷卡");
-        } else if (orderDetail.getOrderType().intValue() == 3) {
+        } else if (orderDetail.getOrderType() == 3) {
             viewHolder.item_tv_mpde_tag.setBackgroundResource(R.drawable.item_list_cash);
             viewHolder.item_tv_mpde_tag.setText("现金");
             viewHolder.item_tv_mpde_tag.setTextColor(mContext.getResources().getColor(R.color.color_cash));
-        } else if (orderDetail.getOrderType().intValue() == 4) {
+        } else if (orderDetail.getOrderType() == 4) {
             viewHolder.item_tv_mpde_tag.setBackgroundResource(R.drawable.item_list_ali);
             viewHolder.item_tv_mpde_tag.setText("二维码");
             viewHolder.item_tv_mpde_tag.setTextColor(mContext.getResources().getColor(R.color.color_ali));

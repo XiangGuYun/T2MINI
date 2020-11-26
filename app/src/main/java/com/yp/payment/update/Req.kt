@@ -2,6 +2,7 @@ package com.yp.payment.update
 
 import android.app.Activity
 import android.os.Build
+import android.text.TextUtils
 import com.yp.baselib.utils.ToastUtils
 import com.yp.payment.Constant
 import com.yp.payment.internet.LoginRequest
@@ -49,6 +50,25 @@ object Req  {
                 ToastUtils.toast("登录失败 ${loginResponse.message}")
             }
         }
+    }
+
+    /**
+     * 三角收银机 - 获取分店列表
+     */
+    fun getBranchList(callback: (List<Branch.Data>) -> Unit) {
+        if (TextUtils.isEmpty(Constant.shopId.toString())) {
+            ToastUtils.toast("系统错误")
+            return
+        }
+
+        com.yp.baselib.utils.OK.get<Branch>("${URL.BASE_URL}${URL.BRANCH_LIST}/${Constant.shopId}", {
+            if (it.code != 200) {
+                ToastUtils.toast(it.message)
+            } else {
+                callback.invoke(it.data)
+            }
+        })
+
     }
 
     /**

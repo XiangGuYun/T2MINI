@@ -12,7 +12,7 @@ object LogUtils {
     /**
      * 不输出任何日志
      */
-    const val LOG_LEVEL_NONE = 0
+    const val LOG_LEVEL_NONE = 1
 
     /**
      * 仅输出DEBUG日志

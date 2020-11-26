@@ -15,6 +15,24 @@ public class ShangMiOrderRequest {
 
     private Integer cashierDeskID;
 
+    private int branchId;
+
+    public int getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(int branchId) {
+        this.branchId = branchId;
+    }
+
+    public int getIsOffline() {
+        return isOffline;
+    }
+
+    public void setIsOffline(int isOffline) {
+        this.isOffline = isOffline;
+    }
+
     public String getCardNo() {
         return cardNo;
     }

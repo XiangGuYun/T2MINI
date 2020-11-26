@@ -266,7 +266,7 @@ public class MoneyActivity extends BaseActivity implements View.OnClickListener,
         payResultPop = new PayResultPop(this, packageName, orderDao, orderListAdapter, shopConfigDao, handler);
         initVipModel();
         initReadCard();
-//        initCamera();
+        initCamera();
         ((TextView)findViewById(R.id.tvVersion)).setText("v"+getVersionName(this));
 
         ScheduledExecutorService scheduledExecutorServiceWithMsg = Executors.newScheduledThreadPool(10);

@@ -17,7 +17,6 @@ public class RequestCaiModel {
     private ParamsBean params;
     private int page_num;
     private int page_size;
-
     public String getSql_id() {
         return sql_id;
     }
@@ -57,6 +56,16 @@ public class RequestCaiModel {
 
         private String shopId;
         private String cashierDeskId;
+
+        private int branchId;
+
+        public int getBranchId() {
+            return branchId;
+        }
+
+        public void setBranchId(int branchId) {
+            this.branchId = branchId;
+        }
 
         public String getCashierDeskId() {
             return cashierDeskId;

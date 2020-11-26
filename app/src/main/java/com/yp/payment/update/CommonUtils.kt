@@ -25,7 +25,7 @@ object CommonUtils {
         orderDetail.shopId = SPHelper.getShopId()
         orderDetail.dateTime = simpleDateFormat.format(date)
         orderDetail.cardNo = cardNo
-        orderDetail.isPayByOffline = isOffline
+        orderDetail.setIsPayByOffline(isOffline)
 //        val orderDetailBox = ObjectBox.boxStore.boxFor(OrderDetail::class.java)
 //        orderDetailBox.put(orderDetail)
     }

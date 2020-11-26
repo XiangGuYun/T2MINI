@@ -36,6 +36,7 @@ public class Req {
         RequestCaiModel.ParamsBean paramsBean = new RequestCaiModel.ParamsBean();
         paramsBean.setShopId(SPHelper.getShopId()+"");
         paramsBean.setCashierDeskId(SPHelper.getCashierDeskId()+"");
+        paramsBean.setBranchId(SPHelper.getBranchId());
         requestCaiModel.setParams(paramsBean);
 
         RequestParams params = new RequestParams(ApkConstant.ISQLQUERY);
@@ -83,6 +84,7 @@ public class Req {
         RequestCaiModel.ParamsBean paramsBean = new RequestCaiModel.ParamsBean();
         paramsBean.setShopId(SPHelper.getShopId()+"");
         paramsBean.setCashierDeskId(SPHelper.getCashierDeskId()+"");
+        paramsBean.setBranchId(SPHelper.getBranchId());
         requestCaiModel.setParams(paramsBean);
 
         RequestParams params = new RequestParams(ApkConstant.ISQLQUERY);

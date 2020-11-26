@@ -12,6 +12,7 @@ import com.yp.baselib.utils.NetUtils.isNetConnected
 import com.yp.baselib.utils.PermissionUtils
 import com.yp.payment.Constant
 import com.yp.payment.Consts
+import com.yp.payment.MainActivity
 import com.yp.payment.R
 import com.yp.payment.dao.ShopConfigDao
 import com.yp.payment.http.MyCallback
@@ -111,7 +112,7 @@ class LoginActivity : BaseActivity() {
         if (shopConfig != null && shopConfig.autoLogin == 1 && isNetConnected(this)) {
             Consts.payModes = Consts.payModesWithNoCash
             Consts.payModeIcons = Consts.payModeIconsWithNoCash
-            goTo<MoneyActivity>()
+            goTo<MoneyActivity>(true)
         }
     }
 

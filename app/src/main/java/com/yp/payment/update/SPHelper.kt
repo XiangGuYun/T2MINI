@@ -48,6 +48,15 @@ object SPHelper {
     }
 
     @JvmStatic
+    fun putBranchId(branchId: Int) {
+        SPUtils.put(BaseApplication.getInstance().context, "branchId", branchId)
+    }
+    @JvmStatic
+    fun getBranchId(): Int {
+        return SPUtils.getInt(BaseApplication.getInstance().context, "branchId", 0)
+    }
+
+    @JvmStatic
     fun putMoney(money: String) {
         SPUtils.put(BaseApplication.getInstance().context, "money", money)
     }

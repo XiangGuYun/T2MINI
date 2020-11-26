@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 
+import com.yp.baselib.utils.LogUtils;
 import com.yp.payment.app.MyApplication;
 
 import org.xutils.BuildConfig;
@@ -63,6 +64,8 @@ public class NetWorkUtils {
         final String url = params.getUri();
 //        LogUtil.d("sendRequest: url = " + url);
         Log.i("请求url---",url);
+        LogUtils.d("NetTag", "请求url---"+url);
+        LogUtils.d("NetTag", "请求参数---"+params.getBodyContent());
         SSLContext sslContext = getSSLContext(MyApplication.getApplication());
         if (null == sslContext) {
             if (BuildConfig.DEBUG) Log.i(TAG, "Error:Can't Get SSLContext!");
@@ -85,6 +88,7 @@ public class NetWorkUtils {
 
             @Override
             public void onError(Throwable arg0, boolean arg1) {
+                LogUtils.d("NetTag", arg0.getLocalizedMessage());
                 if (isShowDialog == true)
 //                SDDialogManager.dismissProgressDialog();
                 callback.onError(arg0.getMessage());
@@ -92,6 +96,7 @@ public class NetWorkUtils {
 
             @Override
             public void onSuccess(String result) {
+                LogUtils.d("NetTag", result);
                 if (isShowDialog == true)
 //                SDDialogManager.dismissProgressDialog();
                 Log.i("请求返回---",result);

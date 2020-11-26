@@ -113,6 +113,8 @@
 
         <activity android:name=".ui.IpSetActivity"/>
 
+        <activity android:name=".update.SubbranchActivity"/>
+
     </application>
 
 </manifest>

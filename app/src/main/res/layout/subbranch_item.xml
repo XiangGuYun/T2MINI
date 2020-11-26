@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:minHeight="40dp"
+    android:padding="5dp"
+    android:id="@+id/subbranch_item_group"
+    android:orientation="horizontal">
+
+    <!--    android:background="@drawable/subbranch_item"-->
+
+
+    <TextView
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:background="#6666ff"
+        android:layout_width="5dp"
+        android:layout_height="match_parent">
+    </TextView>
+
+    <TextView
+        android:id="@+id/tvBranchId"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="ID">
+    </TextView>
+
+    <TextView
+        android:id="@+id/tvBranchName"
+        android:layout_width="0dp"
+        android:layout_weight="4"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:text="NAME">
+    </TextView>
+
+</LinearLayout>

@@ -299,16 +299,17 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
         orderDetail.setPrice(PriceUtil.changeF2Y(shangMiOrderRequest.getAccountBalance()));
         orderDetail.setOrderType(shangMiOrderRequest.getPayType());
 
-        if (orderDetail.getOrderType().intValue() == 2) {//支付类型 0：二维码支付，1：人脸支付，2：实体卡支付，3：其他支付,  4:商户扫码支付
+        if (orderDetail.getOrderType() == 2) {//支付类型 0：二维码支付，1：人脸支付，2：实体卡支付，3：其他支付,  4:商户扫码支付
             orderDetail.setOrderTypeStr("刷卡");
-        } else if (orderDetail.getOrderType().intValue() == 3) {
+        } else if (orderDetail.getOrderType() == 3) {
             orderDetail.setOrderTypeStr("现金");
-        } else if (orderDetail.getOrderType().intValue() == 4) {
+        } else if (orderDetail.getOrderType() == 4) {
             orderDetail.setOrderTypeStr("刷码");
         }
         orderDetail.setDateTime(simpleDateFormat.format(new Date()));
         orderDetail.setShopId(shangMiOrderRequest.getShopID());
         orderDetail.setCashierDeskId(shangMiOrderRequest.getCashierDeskID());
+        orderDetail.setBranchId(SPHelper.getBranchId());
         Log.d(TAG, "orderRequest===: " + GsonUtil.GsonString(shangMiOrderRequest));
 
         MyRetrofit.getApiService().createShangMi(shangMiOrderRequest).enqueue(new MyCallback<JsonsRootBean>() {
@@ -343,7 +344,7 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
                         hide();
                     }*/
 
-                    if (orderDetail.getOrderType().intValue() == 2) {//支付类型 0：二维码支付，1：人脸支付，2：实体卡支付，3：其他支付,  4:商户扫码支付
+                    if (orderDetail.getOrderType() == 2) {//支付类型 0：二维码支付，1：人脸支付，2：实体卡支付，3：其他支付,  4:商户扫码支付
 
                         if (orderResponse.getData().getPayCard() != null) {
                             Constant.payUser = orderResponse.getData().getCustomerName();
@@ -407,7 +408,7 @@ public class PayResultPop extends Dialog implements View.OnClickListener {
 
                     orderListAdapter.notifyDataSetChanged();
 
-                    if (shopConfigDao.query().getAutoPrint().intValue() == 1) {
+                    if (shopConfigDao.query().getAutoPrint() == 1) {
                         if(!Constant.IS_ORDER_DISH){
                             MoneyActivity moneyActivity = (MoneyActivity)context;
                             moneyActivity.printOrder(orderDetail);
